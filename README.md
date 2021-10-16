@@ -8,8 +8,11 @@ The Minimum Viable Product would be a service that allows users to upload games 
 
 ## Team Members:
 Daniel James Cucuzza:
+
 Owen Cozine:
+
 Robert Guerrero:
+
 Andy Polizzotto:  https://github.com/adp527 
 
 ## Contributing
