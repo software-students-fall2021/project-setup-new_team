@@ -7,7 +7,7 @@ Building and playing games is an exciting hobby that is enjoyed by many. However
 The Minimum Viable Product would be a service that allows users to upload games and save games they have created, and to allow multiple users to connect to interact with these games. Additionally features that would greatly enhance the product include a tagging and rating system to find games, and comment and forum system to build a community and make it easier to connect with others playing these games, support for running games online instead of locally and tools to help devlopers create games for the platform.
 
 ## Team Members:
-Daniel James Cucuzza:
+Daniel James Cucuzza: https://github.com/CozyHome
 
 Owen Cozine:
 
