@@ -1,0 +1,25 @@
+
+.appbar 
+{
+    background:darkred;
+}
+
+.toolbar 
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;   
+}
+
+.title 
+{
+    text-align: center;
+}
+
+.profile-icon 
+{
+    margin-left: 0%;
+    margin-right: 0%;
+    padding-left: 0%;
+    padding-right: 0%;
+}
