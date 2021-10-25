@@ -8,20 +8,27 @@ import Typography from '@mui/material/Typography';
 
 import './ArticleCloud.css';
 
-const ArticleCard = ({ a_user, a_name, a_tags }) => 
+const ArticleCard = ({ a_title, a_tags, a_desc }) => 
 {
     return (
         <Link to="#" className = "link">
-            <Card sx = {{ justifySelf: "center", maxWidth: 400 }} className = "card">
+            <Card sx = {{ my: 3, minHeight: 200, justifySelf: "center", maxWidth: 400 }} className = "card">
                 <CardContent>
-                    <Typography variant="h5" component="div" color="text.secondary">{a_name}</Typography>
+                <Typography variant="body2" color="text.secondary">
+                        {a_title}
+                    </Typography>
+                <Typography variant="body2" color="text.secondary">
+                        {a_tags}
+                    </Typography>
                     <Typography variant="body2" color="text.secondary">
-                    Tags: {a_tags.map(tag => { return (tag !== "\0") ? tag + ", " : tag})}
+                        {a_desc.substring(0, 150)}
                     </Typography>
                 </CardContent>
             </Card>
         </Link>
   );
 }
+
+//     {/*Tags: {a_tags.map(tag => { return (tag !== "\0") ? tag + ", " : tag})}*/
 
 export default ArticleCard;
