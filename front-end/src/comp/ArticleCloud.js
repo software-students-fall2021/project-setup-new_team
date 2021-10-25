@@ -11,7 +11,7 @@ import './ArticleCloud.css';
 const ArticleCard = ({ a_title, a_tags, a_desc }) => 
 {
     return (
-        <Link to="#" className = "link">
+        <Link to={`./articles/${a_title}`} className = "link">
             <Card sx = {{ my: 3, minHeight: 200, justifySelf: "center", maxWidth: 400 }} className = "card">
                 <CardContent>
                 <Typography variant="h5" color="text.secondary">
