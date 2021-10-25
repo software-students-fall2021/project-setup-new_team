@@ -14,10 +14,10 @@ const ArticleCard = ({ a_title, a_tags, a_desc }) =>
         <Link to="#" className = "link">
             <Card sx = {{ my: 3, minHeight: 200, justifySelf: "center", maxWidth: 400 }} className = "card">
                 <CardContent>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="h5" color="text.secondary">
                         {a_title}
                     </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body1" color="text.secondary">
                         {a_tags}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">

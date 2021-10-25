@@ -7,7 +7,7 @@ import NavBar from './comp/NavBar';
 import Footer from './comp/Footer';
 
 // pages go here for now!
-import Home_P from './page/Home_P';
+import Articles_P from './page/Articles_P';
 
 import './App.css';
 
@@ -27,7 +27,7 @@ function App() {
 			<div className="App">
 				<div className = "app-body">
 					<Switch>
-						<Route path="/" component = {Home_P} exact />
+						<Route path="/articles" component = {Articles_P} exact />
 					</Switch>
 				</div>
 			</div>
