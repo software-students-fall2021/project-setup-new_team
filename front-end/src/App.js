@@ -67,13 +67,13 @@ function App() {
 			setData(backupData)
 		})
 	}, [])
-	
+
 	return (
 	<>
 		<CssBaseline />
 		<StyledEngineProvider injectFirst> {/* Required to overwrite MUI css */}
-		<NavBar />
 		<Router>
+		<NavBar />
 			<div className="App">
 				<div className = "app-body">
 					<Switch>
