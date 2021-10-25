@@ -1,4 +1,6 @@
-.App {
+.App 
+{
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
 }
 
@@ -11,6 +13,13 @@
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
+}
+
+.app-body 
+{
+    flex-direction: row;
+    display:flex;
+    justify-content: center;
 }
 
 .App-header {
