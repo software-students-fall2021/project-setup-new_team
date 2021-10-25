@@ -1,6 +1,7 @@
 .footer 
 {
     background-color: darkred;
-    margin-top:auto;  
+    margin-top:calc(5% + 60px);
+    bottom:0;
     text-align: center;
 }
