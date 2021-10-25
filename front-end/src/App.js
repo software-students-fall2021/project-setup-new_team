@@ -21,7 +21,8 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
-
+// for debugging since I used all my mockaroo GETs
+import jsonData from './data/var-game.json';
 
 function App() {
 	/*
@@ -52,19 +53,7 @@ function App() {
 
 			// just like professor, make back up data to send to
 			// front-end
-
-			const backupData = 
-			[
-				{
-					"username": "emcelane0",
-					"title"	  : "Welcome to Sarajevo",
-					"job"	  : "Desktop Support Technician",
-					"rating"  : 72,
-					"lorem"	  : "mollis molestie lorem quisque ut erat curabitur gravida nisi at nibh in hac habitasse platea dictumst aliquam augue quam sollicitudin vitae consectetuer eget rutrum at lorem integer tincidunt ante vel ipsum praesent blandit lacinia erat vestibulum sed magna at nunc commodo placerat praesent blandit nam nulla integer pede justo lacinia eget tincidunt eget tempus vel pede morbi porttitor lorem id ligula suspendisse ornare consequat lectus in est risus auctor sed tristique in tempus sit amet sem fusce consequat nulla nisl nunc nisl duis bibendum felis sed interdum venenatis turpis enim blandit mi in porttitor pede justo eu massa donec dapibus duis at velit"
-				}
-			]
-
-			setData(backupData)
+			setData(jsonData)
 		})
 	}, [])
 
@@ -79,6 +68,7 @@ function App() {
 					<Switch>
 						<Route path="/articles" exact> <Articles_P a_data = {data} /> </Route>
 						<Route path="/articles/:name"> <Article_P a_data = {data} /> </Route>
+						<Route> {<h1>Error: 404</h1>} </Route>
 					</Switch>
 				</div>
 			</div>

@@ -4,6 +4,13 @@
     justify-content: center;
 }
 
+.row 
+{
+    display:flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
 .article-header 
 {
     text-align: center;
