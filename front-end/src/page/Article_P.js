@@ -33,7 +33,7 @@ const Article_P = (props) => {
     return (
         <div className = "column">
             <div className = "article-header">
-            <Typography variant="h4" component = "div" className = "header">
+            <Typography variant="h5" component = "div" className = "header">
                     {article.title}
                 </Typography>
             </div>
