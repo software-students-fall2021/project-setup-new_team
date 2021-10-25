@@ -1,9 +1,9 @@
-import React from 'react';
-import {
-    BrowserRouter as Router,
-    useParams
-} from "react-router-dom";
-import Typography from '@mui/material/Typography';
+import React         from 'react';
+import Rating        from '@mui/material/Rating';
+import { useParams } from "react-router-dom";
+import Typography    from '@mui/material/Typography';
+
+import './Article.css'
 
 // using url parameters
 const Article_P = (props) => {
@@ -19,12 +19,23 @@ const Article_P = (props) => {
     }
     
     // this is the actual Article document
-    return ( 
-        <>
-            <Typography variant="h5" component = "div" className = "header">
-                {article.title}
-            </Typography>
-        </>
+    return (
+        <div className = "column">
+            <div className = "article-header">
+            <Typography variant="h4" component = "div" className = "header">
+                    {article.title}
+                </Typography>
+            </div>
+            <div className = "article-body">
+                <Typography variant="body1" component = "div" className = "header" sx= {{ py: .5, textAlign: "left"}}>
+                    By: {article.username}
+                </Typography>
+                <Rating name="read-only" value={article.rating / 20} readOnly sx ={{ paddingBottom: .5}}/>
+                <Typography variant="body2" component = "div" className = "header">
+                    {article.lorem}
+                </Typography>
+            </div>
+        </div> 
     );
 }  
 

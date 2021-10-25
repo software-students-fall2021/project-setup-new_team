@@ -11,12 +11,16 @@ const Articles_P = (props) =>
 	const data = props.a_data;
 
 	return (
-	<div className = "article-body">
-		<Typography variant = "h4" component = "div" className = "article-header"> 
-			User Created Articles
-		</Typography>
-		<ArticlesList a_data = {data} />
-	</ div>
+		<div className = "column">
+			<div className = "article-header">
+			<Typography variant = "h4" component = "div" className = "article-header"> 
+				User Created Articles
+			</Typography>
+			</div>
+		<div className = "article-body">
+			<ArticlesList a_data = {data} />
+		</ div>
+		</div>
 	);
 }
 

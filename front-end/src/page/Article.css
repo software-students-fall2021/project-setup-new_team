@@ -1,5 +1,12 @@
+.column 
+{
+    flex-direction: column;
+    justify-content: center;
+}
+
 .article-header 
 {
+    text-align: center;
     padding-top: 2vh;
 }
 
@@ -8,4 +15,6 @@
     display:flex;
     flex-direction: column;
     justify-content: center;
+    text-align: left;
+    max-width: 400px;
 }

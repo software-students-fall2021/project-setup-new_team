@@ -17,9 +17,9 @@ const BurgerMenu = ({ anchor, onClose, open}) => {
             }}
         >
             {/* this is where we'll assign links to each of the buttons */}
-            <MenuItem onClick={onClose}>Home</MenuItem>
+            <Link to="/"><MenuItem onClick={onClose}>Home</MenuItem> </Link>
             <MenuItem onClick={onClose}>Games</MenuItem>
-            <MenuItem onClick={onClose}>Articles</MenuItem>
+            <Link to="/articles"><MenuItem onClick={onClose}>Articles</MenuItem></Link>
             <MenuItem onClick={onClose}>Forums</MenuItem>
             <MenuItem onClick={onClose}>About</MenuItem>
         </Menu>
