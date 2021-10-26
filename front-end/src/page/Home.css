@@ -17,30 +17,30 @@ h1 {
 p {
     font: roboto;
 }
-.header{
+.bannerClass{
     display: inline-block;
     font-weight: bold;
     text-decoration: underline;
     color: black;
-  }
-  .fontSizeSmall{
-    font-size: 12;
-  }
-  .fontSizeMedium {
+}
+.fontSizeSmall{
+font-size: 12;
+}
+.fontSizeMedium {
     font-size: 16;
-  }
-  .fontSizeLarge {
+}
+.fontSizeLarge {
     font-size: 20px;
-  }
-  .textCenter {
+}
+.textCenter {
     text-align: center;
-  }
-  .textLeft {
+}
+.textLeft {
     text-align: left;
-  }
-  .textRight{
+}
+.textRight{
     text-align: right;
-  }
+}
 .imgLeft{
     clear: right; 
     float: left;

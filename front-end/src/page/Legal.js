@@ -11,7 +11,7 @@ const Legal = (props) => {
       <div className="Legal">
             <h1>#DVG</h1>
             <div className='textLeft'>
-              <div className = 'header fontSizeLarge'>
+              <div className = 'bannerClass fontSizeLarge'>
                   Terms of Service
               </div>
             </div>
@@ -22,7 +22,7 @@ const Legal = (props) => {
               </p>
 
             <div className='textLeft'>
-              <div className = 'header fontSizeLarge'>
+              <div className = 'bannerClass fontSizeLarge'>
                   Privacy Policy
               </div>
             </div>

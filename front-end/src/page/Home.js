@@ -15,7 +15,7 @@ const Home = (props) => {
         <section className="featuredGames">
             {/*header for first game-left justified*/}
             <div className="textLeft">
-                <a href='/game' className='header fontSizeLarge'>
+                <a href='/game' className='bannerClass fontSizeLarge'>
                     Featured game #1
                 </a>
             </div>
@@ -38,7 +38,7 @@ const Home = (props) => {
             <br />
             {/*header for second game-right justified*/}
             <div className = 'textRight'>
-                <a href='/games' className='header fontSizeLarge'> Featured game #2  </a>
+                <a href='/games' className='bannerClass fontSizeLarge'> Featured game #2  </a>
             </div>
             
             {/*body for second game-image on right*/}
@@ -62,7 +62,7 @@ const Home = (props) => {
             
             {/*centered link to more games*/}
             <div className = 'textCenter'>
-                <a href='/games' className = 'header fontSizeMedium'>
+                <a href='/games' className = 'bannerClass fontSizeMedium'>
                     Browse all games
                 </a>
             </div>
@@ -76,7 +76,7 @@ const Home = (props) => {
         <section className="featured-arcticles">
                 {/*header for first article*/}
                 <div className='textCenter'> 
-                    <a href='/articles' className = 'header fontSizeLarge'>
+                    <a href='/articles' className = 'bannerClass fontSizeLarge'>
                         Featured Article #1
                     </a>
                 </div>
@@ -90,7 +90,7 @@ const Home = (props) => {
 
                 {/*header for second article*/}
                 <div className='textCenter'> 
-                    <a href='/articles' className = 'header fontSizeLarge'>
+                    <a href='/articles' className = 'bannerClass fontSizeLarge'>
                         Featured Article #2
                     </a>
                 </div>
@@ -103,7 +103,7 @@ const Home = (props) => {
                 </p>
 
                 <div className='textCenter'>
-                    <a href='/articles' className = 'header fontSizeMedium'>
+                    <a href='/articles' className = 'bannerClass fontSizeMedium'>
                         Browse Articles
                     </a>
                 </div>

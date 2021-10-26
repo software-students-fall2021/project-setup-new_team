@@ -14,7 +14,7 @@ h1 {
 p {
     font: roboto;
 }
-.header{
+.bannerClass{
     display: inline-block;
     font-weight: bold;
     text-decoration: underline;
