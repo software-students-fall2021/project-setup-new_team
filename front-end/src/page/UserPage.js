@@ -1,15 +1,26 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import React, { useState, useEffect } from 'react';
+//import axios from 'axios';
 
-import CssBaseline from '@mui/material/CssBaseline';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { StyledEngineProvider } from '@mui/material/styles';
+//import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Link	from '@mui/material/Link';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
-const UserPageScreen = (props) => {
+import './UserPage.css'
+import Upload from './Upload.js'
+import './Upload.css'
+const UserPage = (props) => {
+    const[openPop, setOpenPop] = useState(false);
+
+    const togglePopup = () => {
+        setOpenPop(!openPop);
+    
+    }
     return (
         <div className="container">
             <div className="UserPage">
-
+                <div className="profilePic">
+                    <AccountCircleIcon/>
+                </div>
                 <h1>Username</h1>
 
                 {/*Wrapper for person's games*/}
@@ -47,20 +58,27 @@ const UserPageScreen = (props) => {
                     <br />
 
                     <p>
-                        {/*To link to upload game*/}
-                        <Link to="/games">
-                            <img alt="uh" src="https://picsum.photos/300" />
-                        </Link>
-                        < div className="textCenter">
-                            This will be the add game button
+                        {/*New game button*/}
+                        <div>
+                        <input
+                            type="button"
+                            value="New Game"
+                            onClick={togglePopup}
+                            />
+                            
+                            {openPop && <Upload
+                            content={<>
+                                <b>Design your Popup</b>
+                                <button>Choose files</button>
+                            </>}
+                            handleClose={togglePopup}
+                            />}
                         </div>
                     </p>
                 </section>
-
-
-
             </div>
-
         </div>
     )
 }
+
+export default UserPage

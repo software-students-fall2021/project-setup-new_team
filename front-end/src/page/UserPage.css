@@ -3,6 +3,9 @@
 
 
 .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     border: 1px solid black;
     max-width: 400px;
     margin: 0 auto;
@@ -32,4 +35,9 @@ font-size: 12;
 .imgCenter{
     clear: right;
     float: center;
+}
+.profilePic{
+    border-radius: 50%;
+    width: 400;
+    height: 400;
 }
