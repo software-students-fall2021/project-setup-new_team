@@ -9,7 +9,7 @@ The Minimum Viable Product would be a service that allows users to upload games 
 ## Team Members:
 Daniel James Cucuzza: https://github.com/CozyHome
 
-Owen Cozine:
+Owen Cozine: https://github.com/OwenCozine
 
 Robert Guerrero:
 
