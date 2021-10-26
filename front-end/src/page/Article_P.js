@@ -7,7 +7,9 @@ import Button        from '@mui/material/Button';
 import Typography    from '@mui/material/Typography';
 import TextField     from '@mui/material/TextField';
 
-import SendIcon from '@mui/icons-material/Send';
+import SendIcon      from '@mui/icons-material/Send';
+import CommentJSON   from './../data/var-game-comments.json';
+import CommentList   from './../comp/CommentList';
 
 import './Article.css'
 
@@ -18,6 +20,10 @@ const SendButton = styled(Button)(({ theme }) => ({
       backgroundColor: "darkred",
     },
 }));
+
+// note: backward arrow button is scraped as it looked
+// generally clunky and out of place. Main nav will be
+// the primary way to leave this page and head back into articles
 
 // using url parameters
 const Article_P = (props) => {
@@ -33,7 +39,7 @@ const Article_P = (props) => {
     return (
         <div className = "column">
             <div className = "article-header">
-            <Typography variant="h4" component = "div" className = "header">
+            <Typography variant="h5" component = "div" className = "header">
                     {article.title}
                 </Typography>
             </div>
@@ -54,6 +60,7 @@ const Article_P = (props) => {
                     defaultValue=""
                 />
                 <div className = "row">
+                <Rating sx ={{ paddingBottom: .5}}/>
                     <SendButton variant="contained" 
                         /* onClick = {sendCommentData(...)} TODO during back-end */
                         startIcon={<SendIcon />} 
@@ -64,6 +71,9 @@ const Article_P = (props) => {
                         comment generation as it requires a username to be associated
                         with a comment. This will have to wait to be fleshed out
                         during front-end development. :( -DC @ October 25th, 2021 */}
+                </div>
+                <div>
+                    <CommentList comment_data = { CommentJSON } />
                 </div>
             </div>
         </div> 
