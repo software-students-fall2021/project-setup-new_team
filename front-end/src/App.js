@@ -14,6 +14,7 @@ import Articles_P from './page/Articles_P';
 import Article_P  from './page/Article_P';
 import Home from './page/Home';
 import Legal from './page/Legal';
+import UserPage from'./page/UserPage';
 
 import './App.css';
 
@@ -72,6 +73,7 @@ function App() {
 						<Route path="/articles" exact> <Articles_P a_data = {data} /> </Route>
 						<Route path="/articles/:name"> <Article_P a_data = {data} /> </Route>
 						<Route path="/legal" exact><Legal/></Route>
+						<Route path ="/userpage" exact><UserPage/></Route>
 						<Route> {<h1>Error: 404</h1>} </Route>
 					</Switch>
 				</div>
