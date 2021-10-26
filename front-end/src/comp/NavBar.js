@@ -9,15 +9,12 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 import BurgerMenu from './BurgerMenu';
-import IconMenu from './IconMenu';
 
 import './NavBar.css';
 
 const NavBar = () => {
 	const [anchorEl, setAnchorEl] = React.useState(null);
-  const [anchorUser, setAnchorUser] = React.useState(null);
-  const open = Boolean(anchorEl); 
-  const openUser = Boolean(anchorUser)
+  const open = Boolean(anchorEl);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -26,15 +23,6 @@ const NavBar = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  const clickUser = (event) => {
-    setAnchorUser(event.currentTarget);
-  };
-
-  const closeUser = () => {
-    setAnchorUser(null);
-  };
-
 
   return (
 		<Box sx={{ flexGrow: 1 }}>
@@ -56,19 +44,14 @@ const NavBar = () => {
           <Typography className = "title" variant="h5" component="div"> 
             Project Title 
           </Typography>
-          <div>
-            <IconButton className = "profile-icon"
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="profile"
-              sx={{ mr: 0 }}
-              onClick={clickUser}
-            >
-              <AccountCircleIcon/>
-            </IconButton>
-              <IconMenu anchor = {anchorUser} onClose = {closeUser} open = {openUser} />
-          </div>
+          <IconButton className = "profile-icon"
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="profile"
+            sx={{ mr: 0 }}>
+            <AccountCircleIcon/>
+          </IconButton>
         </Toolbar>
       </AppBar>
     </Box>

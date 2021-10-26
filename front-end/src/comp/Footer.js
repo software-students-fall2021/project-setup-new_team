@@ -29,7 +29,6 @@ const Footer = () => {
           </Typography>
           <CopyrightObject />
         </Container>
-        <Link to="/legal">Legal information</Link>
       </Box>
 	);
 }
