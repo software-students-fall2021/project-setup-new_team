@@ -12,6 +12,8 @@ import Footer from './comp/Footer';
 // pages go here for now!
 import Articles_P from './page/Articles_P';
 import Article_P  from './page/Article_P';
+import Home from './page/Home';
+import Legal from './page/Legal';
 
 import './App.css';
 
@@ -66,8 +68,10 @@ function App() {
 			<div className="App">
 				<div className = "app-body">
 					<Switch>
+						<Route path="/" exact> <Home/> </Route>
 						<Route path="/articles" exact> <Articles_P a_data = {data} /> </Route>
 						<Route path="/articles/:name"> <Article_P a_data = {data} /> </Route>
+						<Route path="/legal" exact><Legal/></Route>
 						<Route> {<h1>Error: 404</h1>} </Route>
 					</Switch>
 				</div>

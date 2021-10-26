@@ -1,0 +1,51 @@
+.Home {
+}
+.featuredGames{
+}
+
+.container {
+    border: 1px solid black;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 0;
+}
+h1 {
+    font-family: helvetica;
+    margin-left: 20px;
+}
+/* put font here */
+p {
+    font: roboto;
+}
+.header{
+    display: inline-block;
+    font-weight: bold;
+    text-decoration: underline;
+    color: black;
+  }
+  .fontSizeSmall{
+    font-size: 12;
+  }
+  .fontSizeMedium {
+    font-size: 16;
+  }
+  .fontSizeLarge {
+    font-size: 20px;
+  }
+  .textCenter {
+    text-align: center;
+  }
+  .textLeft {
+    text-align: left;
+  }
+  .textRight{
+    text-align: right;
+  }
+.imgLeft{
+    clear: right; 
+    float: left;
+}
+.imgRight{
+    clear: right;
+    float: right;
+}
