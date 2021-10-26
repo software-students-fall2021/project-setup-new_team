@@ -3,20 +3,35 @@ import { Link } from 'react-router-dom';
 // import logo from './logo.svg';
 import './Home.css'
 
-
-
+const clip_title = (data) => {
+    if (data.length > 30) {
+        return data.substring(0, 30) + "..."
+    }
+    return data
+}
+const clip_article = (data) => {
+    if (data.length > 440) {
+        return data.substring(0, 440) + "..."
+    }
+    return data
+}
 const Home = (props) => {
+    
+  const b_data = props.b_data;
+  if(b_data.length < 4){
+      return <div>Loading...</div>;
+  }
   return (
     <div className="container">
         <div className="Home">
         <h1>#DVG</h1>
-        
         {/*Wrapper for featured games*/}
         <section className="featuredGames">
             {/*header for first game-left justified*/}
+            {/*first game*/}
             <div className="textLeft">
                 <a href='/game' className='bannerClass fontSizeLarge'>
-                    Featured game #1
+                    {clip_title(b_data[0].title)}
                 </a>
             </div>
             
@@ -27,18 +42,17 @@ const Home = (props) => {
                     <img alt="welcome!" src="https://picsum.photos/105?page=home" className='imgLeft'/>
                 </Link>
                 {/*main body*/ }
-                Lorem ipsum dolor sit amet, consectet- ur adipiscing elit! Vestibulum ac ullam corper sapien!
-                Sed sit amet bibendum erat! Nunc lorem arcu, laoreet a auctor in, bibendum ut magna! Donec
-                mattis dui quis ante bibendum congue! Curabitur sit amet scelerisque lacus, eget ultrices
-                nisi! Vivamus interdum non mi pretium mattis! Integer convallis, mauris at iaculis pulvinar,
-                enim orci fringilla elit, vitae eleifend est tortor quis enim sina lita dorum onnus...    
+                {clip_article(b_data[0].lorem)}
                 {/*link to game*/}
                 <Link to="/games">{"<"}View Game{">"} </Link> 
             </p>
-            <br />
+            <br/>
+            
             {/*header for second game-right justified*/}
             <div className = 'textRight'>
-                <a href='/games' className='bannerClass fontSizeLarge'> Featured game #2  </a>
+                <a href='/games' className='bannerClass fontSizeLarge'> 
+                    {clip_title(b_data[1].title)}
+                </a>
             </div>
             
             {/*body for second game-image on right*/}
@@ -48,11 +62,7 @@ const Home = (props) => {
                     <img alt="welcome!" src="https://picsum.photos/105?page=home" className='imgRight'/>
                 </Link>
                 {/*main body*/ }
-                Lorem ipsum dolor sit amet, consectet- ur adipiscing elit! Vestibulum ac ullam corper sapien!
-                Sed sit amet bibendum erat! Nunc lorem arcu, laoreet a auctor in, bibendum ut magna! Donec
-                mattis dui quis ante bibendum congue! Curabitur sit amet scelerisque lacus, eget ultrices
-                nisi! Vivamus interdum non mi pretium mattis! Integer convallis, mauris at iaculis pulvinar,
-                enim orci fringilla elit, vitae eleifend est tortor quis enim sina lita dorum onnus...    
+                {clip_article(b_data[1].lorem)}
                 {/*link to game*/}
                 <Link to="/games">{"<"}View Game{">"} </Link> 
             </p>
@@ -76,30 +86,32 @@ const Home = (props) => {
         <section className="featured-arcticles">
                 {/*header for first article*/}
                 <div className='textCenter'> 
-                    <a href='/articles' className = 'bannerClass fontSizeLarge'>
-                        Featured Article #1
-                    </a>
+                    <Link to={`./articles/${b_data[2].title}`} className = 'bannerClass fontSizeLarge'>
+                        {clip_title(b_data[2].title)}
+                    </Link>
                 </div>
+                {/*body for first article*/}
                 <p>
                     {/*first article content*/}
-                    Text text text text. Text text. Text text text. Text text text. Text text text text text text text. Text text. Text text text text text. Text text text text text text text text text text text. Text text text. Text text. Text text. Text text text text text text. Text text text text text. Text text. Text text text text text text text. Text text. Text text text text text. Text text text text text. Text text. Text text text text text. Text text. Text text text text text text text. Text text text. Text text text text text text text text text. Text text. Text text text text text text text text text text. Text text. Text text text text text. Text text text. Text text text. Text text.
-                
+                    {clip_article(b_data[2].lorem)}
                     {/*first article link*/}
-                    <Link to="/articles"> {"<"}Read full article{">"}</Link>
+                    <Link to={`./articles/${b_data[2].title}`}> {"<"}Read full article{">"}</Link>
                 </p>
 
                 {/*header for second article*/}
                 <div className='textCenter'> 
-                    <a href='/articles' className = 'bannerClass fontSizeLarge'>
-                        Featured Article #2
-                    </a>
+                    <Link to={`./articles/${b_data[3].title}`} className = 'bannerClass fontSizeLarge'>
+                        {clip_title(b_data[3].title)}
+                    </Link>
                 </div>
+
+                {/*body for second article*/}
                 <p>
                     {/*second article content*/}
-                    Text text text text. Text text. Text text text. Text text text. Text text text text text text text. Text text. Text text text text text. Text text text text text text text text text text text. Text text text. Text text. Text text. Text text text text text text. Text text text text text. Text text. Text text text text text text text. Text text. Text text text text text. Text text text text text. Text text. Text text text text text. Text text. Text text text text text text text. Text text text. Text text text text text text text text text. Text text. Text text text text text text text text text text. Text text. Text text text text text. Text text text. Text text text. Text text.
-                
+                    {clip_article(b_data[3].lorem)}
+                                    
                     {/*second article link*/}
-                    <Link to="/articles"> {"<"}Read full article{">"}</Link>
+                    <Link to={`./articles/${b_data[3].title}`}  > {"<"}Read full article{">"}</Link>
                 </p>
 
                 <div className='textCenter'>

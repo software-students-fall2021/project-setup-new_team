@@ -17,14 +17,14 @@ h1 {
 p {
     font: roboto;
 }
-.bannerClass{
+.banner-class{
     display: inline-block;
     font-weight: bold;
     text-decoration: underline;
     color: black;
 }
 .fontSizeSmall{
-font-size: 12;
+    font-size: 12;
 }
 .fontSizeMedium {
     font-size: 16;
@@ -42,7 +42,7 @@ font-size: 12;
     text-align: right;
 }
 .imgLeft{
-    clear: right; 
+    clear: left; 
     float: left;
 }
 .imgRight{

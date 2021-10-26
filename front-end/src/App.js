@@ -68,7 +68,7 @@ function App() {
 			<div className="App">
 				<div className = "app-body">
 					<Switch>
-						<Route path="/" exact> <Home/> </Route>
+						<Route path="/" exact> <Home b_data = {data}/> </Route>
 						<Route path="/articles" exact> <Articles_P a_data = {data} /> </Route>
 						<Route path="/articles/:name"> <Article_P a_data = {data} /> </Route>
 						<Route path="/legal" exact><Legal/></Route>
