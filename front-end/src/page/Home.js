@@ -32,7 +32,7 @@ const Home = (props) => {
             {/*header for first game-left justified*/}
             {/*first game*/}
             <div className="home-text-left">
-                <a href='/game' className='home-header home-font-size-large'>
+                <a href={`/game/${b_data[0].title}`} className='home-header home-font-size-large'>
                     {clip_title(b_data[0].title)}
                 </a>
             </div>
@@ -40,19 +40,19 @@ const Home = (props) => {
             {/*body for first game-image on left*/}
             <p className="home-text-left">
                 {/*clickable image*/}
-                <Link to={`/games/${b_data[0].title}`}>
+                <Link to={`/game/${b_data[0].title}`}>
                     <img alt="welcome!" src="https://picsum.photos/105?page=home" className='home-img-left'/>
                 </Link>
                 {/*main body*/ }
                 {clip_article(b_data[0].lorem)}
                 {/*link to game*/}
-                <Link to={`/games/${b_data[0].title}`}>{"<"}View Game{">"} </Link> 
+                <Link to={`/game/${b_data[0].title}`}>{"<"}View Game{">"} </Link> 
             </p>
             <br/>
             
             {/*header for second game-right justified*/}
             <div className = 'home-text-right'>
-                <a href='/games' className='home-header home-font-size-large'> 
+                <a href={`/game/${b_data[0].title}`} className='home-header home-font-size-large'> 
                     {clip_title(b_data[1].title)}
                 </a>
             </div>
@@ -60,13 +60,13 @@ const Home = (props) => {
             {/*body for second game-image on right*/}
             <p className="home-text-left">
                 {/*clickable image*/}
-                <Link to={`/games/${b_data[1].title}`}>
+                <Link to={`/game/${b_data[1].title}`}>
                     <img alt="welcome!" src="https://picsum.photos/105?page=home" className='home-img-right'/>
                 </Link>
                 {/*main body*/ }
                 {clip_article(b_data[1].lorem)}
                 {/*link to game*/}
-                <Link to={`/games/${b_data[1].title}`}>{"<"}View Game{">"} </Link> 
+                <Link to={`/game/${b_data[1].title}`}>{"<"}View Game{">"} </Link> 
             </p>
                 
                 
