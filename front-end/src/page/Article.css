@@ -27,3 +27,23 @@
     width: 400px;
 }
 
+
+.game-header 
+{
+    text-align: center;
+    padding-top: 2vh;
+}
+
+.game-body 
+{
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: left;
+    max-width: 400px;
+    border-style: solid;
+}
+.button-search 
+{
+    
+}

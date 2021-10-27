@@ -12,9 +12,12 @@ import Footer from './comp/Footer';
 // pages go here for now!
 import Articles_P from './page/Articles_P';
 import Article_P  from './page/Article_P';
+import GamesList from './page/GamesList';
+import GamesPage from './page/GamesPage';
 import Home from './page/Home';
 import Legal from './page/Legal';
 import UserPage from'./page/UserPage';
+import CommentsPage from './page/CommentsPage'
 
 import './App.css';
 
@@ -60,6 +63,8 @@ function App() {
 		})
 	}, [])
 
+	
+
 	return (
 	<>
 		<CssBaseline />
@@ -72,6 +77,9 @@ function App() {
 						<Route path="/" exact> <Home b_data = {data}/> </Route>
 						<Route path="/articles" exact> <Articles_P a_data = {data} /> </Route>
 						<Route path="/articles/:name"> <Article_P a_data = {data} /> </Route>
+						<Route path= "/games" component={GamesList}></Route>
+						<Route path= "/game" component={GamesPage}></Route>
+						<Route path= "/comments" component={CommentsPage}></Route>
 						<Route path="/legal" exact><Legal/></Route>
 						<Route path ="/userpage" exact><UserPage/></Route>
 						<Route> {<h1>Error: 404</h1>} </Route>
