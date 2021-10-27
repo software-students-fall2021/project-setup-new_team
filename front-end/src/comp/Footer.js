@@ -2,7 +2,7 @@ import React from 'react';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import Link	from '@mui/material/Link'
+import { Link } from 'react-router-dom';
 
 import CopyrightObject from './CopyrightObject';
 import './Footer.css'
@@ -25,12 +25,13 @@ const Footer = () => {
       >
         <Container maxWidth="sm">
           <Typography variant="body1">
-            My sticky footer can be found here.
+            Footer text.
           </Typography>
           <CopyrightObject />
+          <a href="/legal">Legal Information</a>
         </Container>
-        <Link to="/legal">Legal information</Link>
       </Box>
+      
 	);
 }
 

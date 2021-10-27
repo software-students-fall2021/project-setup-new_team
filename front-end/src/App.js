@@ -12,12 +12,14 @@ import Footer from './comp/Footer';
 // pages go here for now!
 import Articles_P from './page/Articles_P';
 import Article_P  from './page/Article_P';
+import CommentsPage from './page/CommentsPage'
 import GamesList from './page/GamesList';
 import GamesPage from './page/GamesPage';
 import Home from './page/Home';
 import Legal from './page/Legal';
+import Login from './page/Login';
+import Registration from './page/Registration';
 import UserPage from'./page/UserPage';
-import CommentsPage from './page/CommentsPage'
 
 import './App.css';
 
@@ -81,6 +83,8 @@ function App() {
 						<Route path= "/game" component={GamesPage}></Route>
 						<Route path= "/comments" component={CommentsPage}></Route>
 						<Route path="/legal" exact><Legal/></Route>
+						<Route path="/login"><Login/></Route>
+						<Route path="/register"><Registration/></Route>
 						<Route path ="/userpage" exact><UserPage/></Route>
 						<Route> {<h1>Error: 404</h1>} </Route>
 					</Switch>

@@ -19,6 +19,8 @@ const Home = (props) => {
     
   const b_data = props.b_data;
   if(b_data.length < 4){
+      //because we have a constant number of games/articles, 
+      //we need all the data loaded to display the home page
       return <div>Loading...</div>;
   }
   return (
@@ -29,50 +31,50 @@ const Home = (props) => {
         <section className="featuredGames">
             {/*header for first game-left justified*/}
             {/*first game*/}
-            <div className="textLeft">
-                <a href='/game' className='bannerClass fontSizeLarge'>
+            <div className="home-text-left">
+                <a href='/game' className='home-header home-font-size-large'>
                     {clip_title(b_data[0].title)}
                 </a>
             </div>
             
             {/*body for first game-image on left*/}
-            <p className="textLeft">
+            <p className="home-text-left">
                 {/*clickable image*/}
-                <Link to="/games">
-                    <img alt="welcome!" src="https://picsum.photos/105?page=home" className='imgLeft'/>
+                <Link to={`/games/${b_data[0].title}`}>
+                    <img alt="welcome!" src="https://picsum.photos/105?page=home" className='home-img-left'/>
                 </Link>
                 {/*main body*/ }
                 {clip_article(b_data[0].lorem)}
                 {/*link to game*/}
-                <Link to="/games">{"<"}View Game{">"} </Link> 
+                <Link to={`/games/${b_data[0].title}`}>{"<"}View Game{">"} </Link> 
             </p>
             <br/>
             
             {/*header for second game-right justified*/}
-            <div className = 'textRight'>
-                <a href='/games' className='bannerClass fontSizeLarge'> 
+            <div className = 'home-text-right'>
+                <a href='/games' className='home-header home-font-size-large'> 
                     {clip_title(b_data[1].title)}
                 </a>
             </div>
             
             {/*body for second game-image on right*/}
-            <p className="textLeft">
+            <p className="home-text-left">
                 {/*clickable image*/}
-                <Link to="/games">
-                    <img alt="welcome!" src="https://picsum.photos/105?page=home" className='imgRight'/>
+                <Link to={`/games/${b_data[1].title}`}>
+                    <img alt="welcome!" src="https://picsum.photos/105?page=home" className='home-img-right'/>
                 </Link>
                 {/*main body*/ }
                 {clip_article(b_data[1].lorem)}
                 {/*link to game*/}
-                <Link to="/games">{"<"}View Game{">"} </Link> 
+                <Link to={`/games/${b_data[1].title}`}>{"<"}View Game{">"} </Link> 
             </p>
                 
                 
             <br/>
             
             {/*centered link to more games*/}
-            <div className = 'textCenter'>
-                <a href='/games' className = 'bannerClass fontSizeMedium'>
+            <div className = 'home-text-center'>
+                <a href='/games' className = 'home-header home-font-size-medium'>
                     Browse all games
                 </a>
             </div>
@@ -85,8 +87,8 @@ const Home = (props) => {
         {/*wrapper for featured articles*/}
         <section className="featured-arcticles">
                 {/*header for first article*/}
-                <div className='textCenter'> 
-                    <Link to={`./articles/${b_data[2].title}`} className = 'bannerClass fontSizeLarge'>
+                <div className='home-text-center'> 
+                    <Link to={`./articles/${b_data[2].title}`} className = 'home-header home-font-size-large'>
                         {clip_title(b_data[2].title)}
                     </Link>
                 </div>
@@ -99,8 +101,8 @@ const Home = (props) => {
                 </p>
 
                 {/*header for second article*/}
-                <div className='textCenter'> 
-                    <Link to={`./articles/${b_data[3].title}`} className = 'bannerClass fontSizeLarge'>
+                <div className='home-text-center'> 
+                    <Link to={`./articles/${b_data[3].title}`} className = 'home-header home-font-size-large'>
                         {clip_title(b_data[3].title)}
                     </Link>
                 </div>
@@ -114,8 +116,8 @@ const Home = (props) => {
                     <Link to={`./articles/${b_data[3].title}`}  > {"<"}Read full article{">"}</Link>
                 </p>
 
-                <div className='textCenter'>
-                    <a href='/articles' className = 'bannerClass fontSizeMedium'>
+                <div className='home-text-center'>
+                    <a href='/articles' className = 'home-header home-font-size-medium'>
                         Browse Articles
                     </a>
                 </div>
@@ -124,11 +126,6 @@ const Home = (props) => {
         <br/>
         <br/>
         <br/>
-        <div className='textCenter'>
-            <a href='legal'>
-                Legal information.
-            </a>
-        </div>
         
         </div>
         
