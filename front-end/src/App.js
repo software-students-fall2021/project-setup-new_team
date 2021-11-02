@@ -20,6 +20,7 @@ import Legal from './page/Legal';
 import Login from './page/Login';
 import Registration from './page/Registration';
 import UserPage from'./page/UserPage';
+import Upload from './page/Upload';
 
 import './App.css';
 
