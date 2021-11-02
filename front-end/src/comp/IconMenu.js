@@ -4,6 +4,8 @@ import { Link }     from 'react-router-dom';
 import Menu         from '@mui/material/Menu';
 import MenuItem     from '@mui/material/MenuItem';
 import { MusicNote } from '@mui/icons-material';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+
 
 /* i've chosen to pass the callbacks down a level instead of reimporting everything -DC*/
 const IconMenu = ({ anchor, onClose, open}) => {

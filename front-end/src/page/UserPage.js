@@ -7,7 +7,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 import './UserPage.css'
 import Upload from './Upload.js'
-import './Upload.css'
+
 const UserPage = (props) => {
     const[openPop, setOpenPop] = useState(false);
 
