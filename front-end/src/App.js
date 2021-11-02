@@ -86,6 +86,7 @@ function App() {
 						<Route path="/login"><Login/></Route>
 						<Route path="/register"><Registration/></Route>
 						<Route path ="/userpage" exact><UserPage/></Route>
+						<Route path ="/upload" exact><Upload/></Route>
 						<Route> {<h1>Error: 404</h1>} </Route>
 					</Switch>
 				</div>
