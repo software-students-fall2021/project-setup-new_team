@@ -68,7 +68,7 @@ const UserPage = (props) => {
                             
                             {openPop && <Upload
                             content={<>
-                                <b>Design your Popup</b>
+                                <p>Design your Popup</p>
                                 <button>Choose files</button>
                             </>}
                             handleClose={togglePopup}
