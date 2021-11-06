@@ -18,25 +18,25 @@ const clip_article = (data) => {
     return data
 }
 const Home = (props) => {
-  const [featured_data, setFeaturedData] = React.useState([]);
-  const [top_articles, set_top_articles] = React.useState([]);
-  const [top_games, set_top_games] = React.useState([]);
+  const [featured_data, setFeaturedData] = React.useState([]); //actual data for page
+
+  const [top_articles, set_top_articles] = React.useState({id1: -1, id2: -1}); 
+  const [top_games, set_top_games] = React.useState({id1: -1, id2: -1}); //we'll use these to get the top games and articles
+  
   useEffect(() =>{
     if(featured_data.length === 4){return;}
-    if(Object.keys(top_articles).length === 0){
+    if(top_articles.id1 === -1){
         axios.get('http://localhost:3000/top_articles')
             .then(res => { set_top_articles(res.data) }) 
             .catch(err => { console.log(err) })
-    }
-    
-    if(Object.keys(top_games).length === 0){
+    }else if(top_games.id1 === -1){
         axios.get('http://localhost:3000/top_games')
             .then(res => { set_top_games(res.data) }) 
             .catch(err => { console.log(err) })
     }
-    
-    if(Object.keys(top_games).length !== 2 || Object.keys(top_articles).length !== 2){
-        console.log(`loading...${Object.keys(top_games).length} ${Object.keys(top_articles).length}`)
+    //order dependent: only query for top games and articles when we know which pages to display
+    if(top_articles.id1 === -1 || top_games.id1 === -1){
+        console.log(`loading...${top_articles.id1} ${top_games.id1}`)
         return;
     }
     console.log(`...getting featured pages ${featured_data.length}`)
@@ -45,10 +45,12 @@ const Home = (props) => {
     else if(featured_data.length === 1){id = top_games.id2;}
     else if(featured_data.length === 2){id = top_articles.id1;}
     else if(featured_data.length === 3){id = top_articles.id2;}
+
+    //for stability, add each page one at a time
     axios.get(`http://localhost:3000/games_data/${id}`)
         .then(res => { setFeaturedData([...featured_data, res.data]) })
         .catch(err => { console.log(err) })
-  }, [top_articles.id1, top_articles.id2, top_games.id1, top_games.id2, featured_data])
+  }, [top_articles.id1, top_articles.id2, top_games.id1, top_games.id2, featured_data]) //whenever a query is finished, process next one
   
   if(featured_data.length < 4){
       //because we have a constant number of games/articles, 
