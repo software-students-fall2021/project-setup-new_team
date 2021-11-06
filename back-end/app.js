@@ -59,6 +59,7 @@ app.get('/images/:id', (req,res,next)  => {
     .catch(err => next(err))
 })
 
+
 app.get('/top_articles', (req,res,next) => {
     if(process.env.DEBUG){
         res.json({id1: 1, id2: 2})
