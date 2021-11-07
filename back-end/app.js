@@ -8,6 +8,38 @@ require('dotenv').config({silent: true})
 const morgan = require('morgan')
 const cors = require('cors')
 
+// json database for articles -DC
+const articleData = 
+[
+    {
+        article_name:"learning",
+        article_text:"text",
+        image_url   :"https://i.kym-cdn.com/entries/icons/original/000/011/900/dopefish_lives_kakkit.gif", // the dopefish lives!
+        poster_name :"username",
+        rating      :0,
+        comments    :
+        [
+            {
+                "poster_name":"username",
+                "comment_text":"this article rocks!",
+            }
+        ],
+    },
+    {
+        article_name:"learning2",
+        article_text:"text2",
+        image_url   :"https://i.kym-cdn.com/entries/icons/original/000/011/900/dopefish_lives_kakkit.gif", // the dopefish lives!
+        poster_name :"username2",
+        rating      :0,
+        comments    :
+        [
+            {
+                "poster_name":"username2",
+                "comment_text":"this article rocks! 2",
+            }
+        ],
+    }
+]
 
 app.use(morgan('dev'))
 app.use(cors()) //enables CORS for _all_ requests 
@@ -16,7 +48,6 @@ app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
 app.use('/static', express.static('public')) // only need this when we add static files: dead code for now
-
 
 app.get('/articles_data/:id', (req,res,next) => {
     if(process.env.DEBUG){
@@ -35,6 +66,54 @@ app.get('/articles_data/:id', (req,res,next) => {
         .catch(err => next(err))
     }
     
+})
+
+app.get('/articles', (req, res, next) => {
+    if(process.env.DEBUG)
+    {
+        res.json(articleData.map((article) => 
+        ({ 
+            article_name  : article.article_name,
+            article_text  : article.article_text.substring(0, 100),
+            article_poster: article.poster_name,
+        }))
+    }
+})
+
+app.get('/articles/:name', (req, res, next) => {
+    if(process.env.DEBUG) 
+    {
+        const name       = req.params.name;
+        const articleObj = articleData.find(article => article.article_name === name);
+        if(!articleObj) // null
+        {
+            res.json({
+                success: false,
+                error: "Error 404: article does not exist!"
+            })
+        }
+        else 
+        {
+            res.json({
+                success: true,
+                data: articleObj
+            })
+        }
+    } 
+    else
+    {
+        // we technically don't want to generate data on the fly here. We want the server
+        // to have its data at startup-time + real-time changes as the users append more content
+        // to the articles database. For now, this database will simply be a json object containing
+        // all articles. -DC @ 4:14 PM November 7th, 2021.
+
+        // the server will do the following when a client requests a specific article:
+        // (1) check if the article exists. if it does, send it in a json object to the end-user.
+        // (2) if the articles doesn't exist, send a message saying Error 404.
+
+        const name    = req.params.name;
+        const article = articleData.find(article => article.name === name);
+    }
 })
 
 app.get('/games_data/:id', (req,res,next) => {
