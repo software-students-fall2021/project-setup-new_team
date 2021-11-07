@@ -1,6 +1,6 @@
 const assert = require('assert');
 const { default: axios } = require('axios');
-
+const fetch = require('node-fetch');    
 
 function getRandomInt(max){
     return Math.floor(Math.random() * max);
@@ -26,6 +26,8 @@ describe('Register', function() {
                 password: 'password',
                 confirm_password: 'password'
             })
+            console.log('result is ')
+            console.log(result.error)
             assert.equal(result, 'Username is required');
         })
         it('should return error when no email given', async function() {
