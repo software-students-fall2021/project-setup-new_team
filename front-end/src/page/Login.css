@@ -1,0 +1,27 @@
+.Login{
+}
+.login-container { 
+    border: 1px solid black;
+    max-width: 400px;
+    min-height: 600px;
+    margin: 0 auto;
+    padding: 0;
+    flex-direction: row;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.login-form{
+    flex-direction: column;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+.login-header{
+    display: inline-block;
+    font-weight: bold;
+    text-decoration: underline;
+    color: black;
+}

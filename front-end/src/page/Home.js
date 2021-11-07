@@ -1,7 +1,9 @@
-import React from 'react'
+import axios from 'axios';
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom';
 // import logo from './logo.svg';
 import './Home.css'
+
 
 const clip_title = (data) => {
     if (data.length > 30) {
@@ -16,10 +18,44 @@ const clip_article = (data) => {
     return data
 }
 const Home = (props) => {
-    
-  const b_data = props.b_data;
-  if(b_data.length < 4){
-      return <div>Loading...</div>;
+  const [featured_data, setFeaturedData] = React.useState([]); //actual data for page
+
+  const [top_articles, set_top_articles] = React.useState({id1: -1, id2: -1}); 
+  const [top_games, set_top_games] = React.useState({id1: -1, id2: -1}); //we'll use these to get the top games and articles
+  
+  useEffect(() =>{
+    if(featured_data.length === 4){return;}
+    if(top_articles.id1 === -1){
+        axios.get('http://localhost:3000/top_articles')
+            .then(res => { set_top_articles(res.data) }) 
+            .catch(err => { console.log(err) })
+    }else if(top_games.id1 === -1){
+        axios.get('http://localhost:3000/top_games')
+            .then(res => { set_top_games(res.data) }) 
+            .catch(err => { console.log(err) })
+    }
+    //order dependent: only query for top games and articles when we know which pages to display
+    if(top_articles.id1 === -1 || top_games.id1 === -1){
+        console.log(`loading...${top_articles.id1} ${top_games.id1}`)
+        return;
+    }
+    console.log(`...getting featured pages ${featured_data.length}`)
+    var id;
+    if(featured_data.length === 0){id = top_games.id1;}
+    else if(featured_data.length === 1){id = top_games.id2;}
+    else if(featured_data.length === 2){id = top_articles.id1;}
+    else if(featured_data.length === 3){id = top_articles.id2;}
+
+    //for stability, add each page one at a time
+    axios.get(`http://localhost:3000/games_data/${id}`)
+        .then(res => { setFeaturedData([...featured_data, res.data]) })
+        .catch(err => { console.log(err) })
+  }, [top_articles.id1, top_articles.id2, top_games.id1, top_games.id2, featured_data]) //whenever a query is finished, process next one
+  
+  if(featured_data.length < 4){
+      //because we have a constant number of games/articles, 
+      //we need all the data loaded to display the home page
+      return <div>Loading...</div>
   }
   return (
     <div className="container">
@@ -29,50 +65,50 @@ const Home = (props) => {
         <section className="featuredGames">
             {/*header for first game-left justified*/}
             {/*first game*/}
-            <div className="textLeft">
-                <a href='/game' className='bannerClass fontSizeLarge'>
-                    {clip_title(b_data[0].title)}
+            <div className="home-text-left">
+                <a href={`/game/${featured_data[0].title}`} className='home-header home-font-size-large'>
+                    {clip_title(featured_data[0].title)}
                 </a>
             </div>
             
             {/*body for first game-image on left*/}
-            <p className="textLeft">
+            <p className="home-text-left">
                 {/*clickable image*/}
-                <Link to="/games">
-                    <img alt="welcome!" src="https://picsum.photos/105?page=home" className='imgLeft'/>
+                <Link to={`/game/${featured_data[0].title}`}>
+                    <img alt="welcome!" src="https://picsum.photos/105?page=home" className='home-img-left'/>
                 </Link>
                 {/*main body*/ }
-                {clip_article(b_data[0].lorem)}
+                {clip_article(featured_data[0].lorem)}
                 {/*link to game*/}
-                <Link to="/games">{"<"}View Game{">"} </Link> 
+                <Link to={`/game/${featured_data[0].title}`}>{"<"}View Game{">"} </Link> 
             </p>
             <br/>
             
             {/*header for second game-right justified*/}
-            <div className = 'textRight'>
-                <a href='/games' className='bannerClass fontSizeLarge'> 
-                    {clip_title(b_data[1].title)}
+            <div className = 'home-text-right'>
+                <a href={`/game/${featured_data[0].title}`} className='home-header home-font-size-large'> 
+                    {clip_title(featured_data[1].title)}
                 </a>
             </div>
             
             {/*body for second game-image on right*/}
-            <p className="textLeft">
+            <p className="home-text-left">
                 {/*clickable image*/}
-                <Link to="/games">
-                    <img alt="welcome!" src="https://picsum.photos/105?page=home" className='imgRight'/>
+                <Link to={`/game/${featured_data[1].title}`}>
+                    <img alt="welcome!" src="https://picsum.photos/105?page=home" className='home-img-right'/>
                 </Link>
                 {/*main body*/ }
-                {clip_article(b_data[1].lorem)}
+                {clip_article(featured_data[1].lorem)}
                 {/*link to game*/}
-                <Link to="/games">{"<"}View Game{">"} </Link> 
+                <Link to={`/game/${featured_data[1].title}`}>{"<"}View Game{">"} </Link> 
             </p>
                 
                 
             <br/>
             
             {/*centered link to more games*/}
-            <div className = 'textCenter'>
-                <a href='/games' className = 'bannerClass fontSizeMedium'>
+            <div className = 'home-text-center'>
+                <a href='/games' className = 'home-header home-font-size-medium'>
                     Browse all games
                 </a>
             </div>
@@ -85,37 +121,37 @@ const Home = (props) => {
         {/*wrapper for featured articles*/}
         <section className="featured-arcticles">
                 {/*header for first article*/}
-                <div className='textCenter'> 
-                    <Link to={`./articles/${b_data[2].title}`} className = 'bannerClass fontSizeLarge'>
-                        {clip_title(b_data[2].title)}
+                <div className='home-text-center'> 
+                    <Link to={`./articles/${featured_data[2].title}`} className = 'home-header home-font-size-large'>
+                        {clip_title(featured_data[2].title)}
                     </Link>
                 </div>
                 {/*body for first article*/}
                 <p>
                     {/*first article content*/}
-                    {clip_article(b_data[2].lorem)}
+                    {clip_article(featured_data[2].lorem)}
                     {/*first article link*/}
-                    <Link to={`./articles/${b_data[2].title}`}> {"<"}Read full article{">"}</Link>
+                    <Link to={`./articles/${featured_data[2].title}`}> {"<"}Read full article{">"}</Link>
                 </p>
 
                 {/*header for second article*/}
-                <div className='textCenter'> 
-                    <Link to={`./articles/${b_data[3].title}`} className = 'bannerClass fontSizeLarge'>
-                        {clip_title(b_data[3].title)}
+                <div className='home-text-center'> 
+                    <Link to={`./articles/${featured_data[3].title}`} className = 'home-header home-font-size-large'>
+                        {clip_title(featured_data[3].title)}
                     </Link>
                 </div>
 
                 {/*body for second article*/}
                 <p>
                     {/*second article content*/}
-                    {clip_article(b_data[3].lorem)}
+                    {clip_article(featured_data[3].lorem)}
                                     
                     {/*second article link*/}
-                    <Link to={`./articles/${b_data[3].title}`}  > {"<"}Read full article{">"}</Link>
+                    <Link to={`./articles/${featured_data[3].title}`}  > {"<"}Read full article{">"}</Link>
                 </p>
 
-                <div className='textCenter'>
-                    <a href='/articles' className = 'bannerClass fontSizeMedium'>
+                <div className='home-text-center'>
+                    <a href='/articles' className = 'home-header home-font-size-medium'>
                         Browse Articles
                     </a>
                 </div>
@@ -124,11 +160,6 @@ const Home = (props) => {
         <br/>
         <br/>
         <br/>
-        <div className='textCenter'>
-            <a href='legal'>
-                Legal information.
-            </a>
-        </div>
         
         </div>
         

@@ -3,7 +3,7 @@
 .featuredGames{
 }
 
-.container {
+.container { 
     border: 1px solid black;
     max-width: 400px;
     margin: 0 auto;
@@ -15,37 +15,37 @@ h1 {
 }
 /* put font here */
 p {
-    font: roboto;
+    font-family: 'Roboto', sans-serif;
 }
-.banner-class{
+.home-header{
     display: inline-block;
     font-weight: bold;
     text-decoration: underline;
     color: black;
 }
-.fontSizeSmall{
+.home-font-size-small{
     font-size: 12;
 }
-.fontSizeMedium {
+.home-font-size-medium {
     font-size: 16;
 }
-.fontSizeLarge {
+.home-font-size-large {
     font-size: 20px;
 }
-.textCenter {
+.home-text-center {
     text-align: center;
 }
-.textLeft {
+.home-text-left {
     text-align: left;
 }
-.textRight{
+.home-text-right{
     text-align: right;
 }
-.imgLeft{
+.home-img-left{
     clear: left; 
     float: left;
 }
-.imgRight{
+.home-img-right{
     clear: right;
     float: right;
 }

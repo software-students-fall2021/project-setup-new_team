@@ -7,7 +7,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 import './UserPage.css'
 import Upload from './Upload.js'
-import './Upload.css'
+
 const UserPage = (props) => {
     const[openPop, setOpenPop] = useState(false);
 
@@ -68,7 +68,7 @@ const UserPage = (props) => {
                             
                             {openPop && <Upload
                             content={<>
-                                <b>Design your Popup</b>
+                                <p>Design your Popup</p>
                                 <button>Choose files</button>
                             </>}
                             handleClose={togglePopup}

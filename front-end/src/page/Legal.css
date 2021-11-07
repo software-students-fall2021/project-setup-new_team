@@ -12,29 +12,29 @@ h1 {
 }
 /* put font here */
 p {
-    font: roboto;
+    font-family: 'Roboto', sans-serif;
 }
-.bannerClass{
+.legal-header{
     display: inline-block;
     font-weight: bold;
     text-decoration: underline;
     color: black;
 }
-.fontSizeSmall{
+.font-size-small{
     font-size: 12;
 }
-.fontSizeMedium {
+.font-size-medium {
     font-size: 16;
 }
-.fontSizeLarge {
+.legal-font-size-large {
     font-size: 20px;
 }
-.textCenter {
+.legal-text-center {
     text-align: center;
 }
-.textLeft {
+.legal-text-left {
     text-align: left;
 }
-.textRight{
+.legal-text-right{
     text-align: right;
 }
