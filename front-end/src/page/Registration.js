@@ -1,34 +1,31 @@
 import axios from 'axios';
 import React, {useEffect} from 'react'
 import './Registration.css'
-//import { Button } from '@material-ui/core';
 
 
-const getResigistrationMessage = (registerPressed) => {
-  if(!registerPressed){return "";}
-  let res = "We noticed you pressed our button ";
-  for(let i = 1; i < registerPressed; i++){
-      res += "again ";
-  }
-  res += "but we haven't set it up yet!";
-  return res;
-}
+
 
 const Registration = (props) => {
-  const [registerPressed, setRegisterPressed] = React.useState(0);
+  const [registrationMessage, setRegistrationMessage] = React.useState('');
+
   const handleSubmit = (event) => {
     event.preventDefault();
+    //send data to server
     axios.post('http://localhost:3000/register', {
       username: event.target.username.value,
-      password: event.target.password.value,
       email: event.target.email.value,
+      password: event.target.password.value,
       confirm_password: event.target.confirm_password.value
     })
     .then(function (response) {
+      //give success message
       console.log(response);
+      setRegistrationMessage(response.data.status);
     })
     .catch(function (error) {
+      //give error message
       console.log(error);
+      setRegistrationMessage(error.response.data.error)
     });
   }
   return (
@@ -39,7 +36,7 @@ const Registration = (props) => {
                 <div className="register-header font-size">
                     Register
                 </div>
-                {/* form should post data to url when submitted */}
+                {/* form to post data to back-end when submitted */}
                 <form action="http://localhost:3000/register" method="POST" onSubmit={handleSubmit}>
                     <input type="text" placeholder="Username" name="username" required/>
                     <input type="email" placeholder="Email" name="email" required/>
@@ -49,9 +46,7 @@ const Registration = (props) => {
                </form> 
                {/*
               <button onClick={handle_register} > Register </button> */}
-              <p>{getResigistrationMessage(registerPressed)}</p>
-                    
-
+              <p>{registrationMessage}</p>
               </div>
         </div>
     </div>

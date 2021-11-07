@@ -1,25 +1,29 @@
 import React from 'react'
+import axios from 'axios'
 import { Link } from 'react-router-dom';
 // import logo from './logo.svg';
 import './Login.css'
-/*import Button from '@material-ui/core/Button';*/
 
-{/* to be completed when backend supports login*/}
-const getLoginMessage = (loginPressed) => {
-    if(!loginPressed){return "";}
-    let res = "We noticed you pressed our button ";
-    for(let i = 1; i < loginPressed; i++){
-        res += "again ";
-    } 
-    res += "but we haven't set it up yet!";
-    return res;
-}
+
 const Login = (props) => {
-  const [loginPressed, setLoginPressed] = React.useState(false);
-  {/* to be completed when backend supports login*/}
-  const handle_login = () => {
-        setLoginPressed(loginPressed + 1);
-        console.log("trying");
+  const [loginMessage, setLoginMessage] = React.useState('');
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    //send data to server
+    axios.post('http://localhost:3000/login', {
+      username: event.target.username.value,
+      password: event.target.password.value
+    })
+    .then(function (response) {
+      //give success message
+      console.log(response);
+      setLoginMessage(response.data.status);
+    })
+    .catch(function (error) {
+      //give error message
+      console.log(error);
+      setLoginMessage(error.response.data.error)
+    });
   }
   return (
     <div>
@@ -29,18 +33,17 @@ const Login = (props) => {
                     <div className="login-header">
                         Login
                     </div>
-                    {/*should be in a form when backend added */}
-                    <input type="text" placeholder="username"/> 
-                    <input type="password" placeholder="password"/>
-                    {/*<Button variant="contained"
-                            color="primary"
-                            onClick={handle_login}>
-                                Login
-                    </Button> add MUI button later*/}
-                    <button onClick={handle_login}> Login </button>
+                    {/* form to post data to back-end when submitted */}
+                        <form action="http://localhost:3000/login" method="POST" onSubmit={handleSubmit}>
+                            <input type="text" placeholder="Username" name="username" required/>
+                            <br/>
+                            <input type="password" placeholder="Password" name="password" required/>
+                            <br/>
+                            <input type="submit" value="Login" className="login-button"/>
+                    </form> 
                     <p>No account yet? Why not? <Link to="/register">Create an account</Link></p>
                     <br/>
-                    <p>{getLoginMessage(loginPressed)}</p>
+                    <p>{loginMessage}</p>
             </div>
         </div>
     </div>

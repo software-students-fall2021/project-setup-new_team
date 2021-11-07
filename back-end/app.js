@@ -10,7 +10,7 @@ const cors = require('cors')
 
 
 app.use(morgan('dev'))
-app.use(cors()) //enables CORS for _all_ requests
+app.use(cors()) //enables CORS for _all_ requests 
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
@@ -93,23 +93,23 @@ app.post('/register', (req,res,next) => {
     console.log(req.body)
     //missing username
     if(!req.body.username){
-        res.status(400).json({error: 'username is required'})
+        res.status(400).json({error: 'Username is required'})
     }
     //missing email
     if(!req.body.email){
-        res.status(400).json({error: 'email is required'})
+        res.status(400).json({error: 'Email is required'})
     }
     //missing password
     if(!req.body.password){
-        res.status(400).json({error: 'password is required'})
+        res.status(400).json({error: 'Password is required'})
     }
     //missing password confirmation
     if(!req.body.confirm_password){
-        res.status(400).json({error: 'password confirmation is required'})
+        res.status(400).json({error: '{Password confirmation is required'})
     }
     //passwords do not match
     if(req.body.password != req.body.confirm_password){
-        res.status(400).json({error: 'passwords do not match'})
+        res.status(400).json({error: 'Passwords do not match'})
     }
 
     //link to database goes here
@@ -119,5 +119,24 @@ app.post('/register', (req,res,next) => {
     })
 })
 
+app.post('/login', (req,res,next) => {
+    console.log(req.body)
+    //missing username
+    if(!req.body.username){
+        res.status(400).json({error: 'Username is required'})
+    }
+    //missing password
+    if(!req.body.password){
+        res.status(400).json({error: 'Password is required'})
+    }
+                //we'll check password against database instead of comparing a string
+    if(req.body.password == 'password'){
+        res.json({
+            status: 'Success!'
+        })
+    }else{
+        res.status(400).json({error: 'Password submitted does not match our records'})
+    }
+})
 
 module.exports = app
