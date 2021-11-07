@@ -6,8 +6,11 @@ const multer = require('multer')
 const axios = require('axios')
 require('dotenv').config({silent: true})
 const morgan = require('morgan')
+const cors = require('cors')
+
 
 app.use(morgan('dev'))
+app.use(cors()) //enables CORS for _all_ requests
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
@@ -83,6 +86,37 @@ app.get('/top_games', (req,res,next) => {
         .catch(err => next(err))
     }
     
+})
+
+//get information for registration
+app.post('/register', (req,res,next) => {
+    console.log(req.body)
+    //missing username
+    if(!req.body.username){
+        res.status(400).json({error: 'username is required'})
+    }
+    //missing email
+    if(!req.body.email){
+        res.status(400).json({error: 'email is required'})
+    }
+    //missing password
+    if(!req.body.password){
+        res.status(400).json({error: 'password is required'})
+    }
+    //missing password confirmation
+    if(!req.body.confirm_password){
+        res.status(400).json({error: 'password confirmation is required'})
+    }
+    //passwords do not match
+    if(req.body.password != req.body.confirm_password){
+        res.status(400).json({error: 'passwords do not match'})
+    }
+
+    //link to database goes here
+
+    res.json({
+        status: 'Success!'
+    })
 })
 
 

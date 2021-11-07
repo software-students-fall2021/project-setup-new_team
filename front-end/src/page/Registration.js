@@ -1,4 +1,5 @@
-import React from 'react'
+import axios from 'axios';
+import React, {useEffect} from 'react'
 import './Registration.css'
 //import { Button } from '@material-ui/core';
 
@@ -15,8 +16,20 @@ const getResigistrationMessage = (registerPressed) => {
 
 const Registration = (props) => {
   const [registerPressed, setRegisterPressed] = React.useState(0);
-  const handle_register = () => {
-    setRegisterPressed(registerPressed + 1);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    axios.post('http://localhost:3000/register', {
+      username: event.target.username.value,
+      password: event.target.password.value,
+      email: event.target.email.value,
+      confirm_password: event.target.confirm_password.value
+    })
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
   }
   return (
     <div>
@@ -26,17 +39,17 @@ const Registration = (props) => {
                 <div className="register-header font-size">
                     Register
                 </div>
-                <form>
-                    <input type="text" placeholder="Username" />
-                    <input type="email" placeholder="Email" />
-                    <input type="password" placeholder="Password" />
-                    <input type="password" placeholder="Confirm Password" />
-                    {/*<Button variant="contained" color="primary" onClick={handle_register}>Register</Button>
-                          add MUI button later*/}
-                          
-               </form>
-              <button onClick={handle_register} > Register </button>
-                <p>{getResigistrationMessage(registerPressed)}</p>
+                {/* form should post data to url when submitted */}
+                <form action="http://localhost:3000/register" method="POST" onSubmit={handleSubmit}>
+                    <input type="text" placeholder="Username" name="username" required/>
+                    <input type="email" placeholder="Email" name="email" required/>
+                    <input type="password" placeholder="Password" name="password" required/>
+                    <input type="password" placeholder="Confirm Password" name="confirm_password" required/>
+                    <input type="submit" value="Register" className="register-button"/>
+               </form> 
+               {/*
+              <button onClick={handle_register} > Register </button> */}
+              <p>{getResigistrationMessage(registerPressed)}</p>
                     
 
               </div>
