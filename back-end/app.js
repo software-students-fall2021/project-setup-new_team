@@ -60,6 +60,7 @@ app.get('/images/:id', (req,res,next)  => {
 })
 
 
+//return indices of featured articles for home page
 app.get('/top_articles', (req,res,next) => {
     if(process.env.DEBUG){
         res.json({id1: 1, id2: 2})
@@ -72,6 +73,7 @@ app.get('/top_articles', (req,res,next) => {
     
 })
 
+//return indices of featured games for home page
 app.get('/top_games', (req,res,next) => {
     if(process.env.DEBUG){
         res.json({id1: 1, id2: 2})
