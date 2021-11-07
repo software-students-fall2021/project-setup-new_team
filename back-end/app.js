@@ -171,4 +171,10 @@ app.get('/query', (req, res, next) => {
     res.json = search
 })
 
+app.get('/params/:tile', (req, res, next) => {
+    const params = req.params
+    res.json({
+        params:params
+    })
+})
 module.exports = app
