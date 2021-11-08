@@ -19,6 +19,9 @@ const clip_article = (data) => {
 }
 const Home = (props) => {
   const [featuredData, setFeaturedData] = React.useState([]); //actual data for page
+  const [gamesImages, setGamesImages] = React.useState([]); //thumbs for games
+
+  //generic query for data from server
   function getQuery(args){
       return new Promise((resolve, reject) => {
             axios.get(`http://localhost:3000/${args}`)
@@ -26,21 +29,29 @@ const Home = (props) => {
             .catch(err => {console.log(err)})
         })
   }
+  //gets all page data asynchronously
   async function getPageData(){
-        const topGames = await getQuery("top_games")
-        const topArticles = await getQuery("top_articles");
-        const featuredGame1 = await getQuery(`games_data/${topGames.id1}`);
-        const featuredGame2 = await getQuery(`games_data/${topGames.id2}`);
-        const featuredArticle1 = await getQuery(`articles_data/${topArticles.id1}`);
-        const featuredArticle2 = await getQuery(`articles_data/${topArticles.id2}`);
-        setFeaturedData([featuredGame1, featuredGame2, featuredArticle1, featuredArticle2])
+        const topGames = await getQuery("static/top_games")
+        const thumb1 = await getQuery(`images/${topGames.id1}`);
+        const thumb2 = await getQuery(`images/${topGames.id2}`);
+        const topArticles = await getQuery("static/top_articles");
+        const featuredGame1 = await getQuery(`games/${topGames.id1}`);
+        const featuredGame2 = await getQuery(`games/${topGames.id2}`);
+        const featuredArticle1 = await getQuery(`articles/${topArticles.id1}`);
+        const featuredArticle2 = await getQuery(`articles/${topArticles.id2}`);
+        setFeaturedData([featuredGame1, featuredGame2, featuredArticle1.data, featuredArticle2.data])
+        console.log(thumb1);
+        console.log(topGames)
+        setGamesImages([thumb1, thumb2])
   }
   useEffect(() => {
      console.log("getting page data")
      getPageData()
   }, [])
   
-  if(featuredData.length < 4){return <div>Loading...</div>}
+  //we need all data to be loaded
+  //before we can display the page
+  if(featuredData.length < 4 || gamesImages.length < 2){return <div>Loading...</div>}
   return (
     <div className="container">
         <div className="Home">
@@ -50,7 +61,7 @@ const Home = (props) => {
             {/*header for first game-left justified*/}
             {/*first game*/}
             <div className="home-text-left">
-                <a href={`/game/${featuredData[0].title}`} className='home-header home-font-size-large'>
+                <a href={`/game/${featuredData[0].id}`} className='home-header home-font-size-large'>
                     {clip_title(featuredData[0].title)}
                 </a>
             </div>
@@ -58,19 +69,19 @@ const Home = (props) => {
             {/*body for first game-image on left*/}
             <p className="home-text-left">
                 {/*clickable image*/}
-                <Link to={`/game/${featuredData[0].title}`}>
-                    <img alt="welcome!" src="https://picsum.photos/105?page=home" className='home-img-left'/>
+                <Link to={`/game/${featuredData[0].id}`}>
+                    <img alt="welcome!" src={gamesImages[0].image_url} className='home-img-left'/>
                 </Link>
                 {/*main body*/ }
-                {clip_article(featuredData[0].lorem)}
+                {clip_article(featuredData[0].description)}
                 {/*link to game*/}
-                <Link to={`/game/${featuredData[0].title}`}>{"<"}View Game{">"} </Link> 
+                <Link to={`/game/${featuredData[0].id}`}>{"<"}View Game{">"} </Link> 
             </p>
             <br/>
             
             {/*header for second game-right justified*/}
             <div className = 'home-text-right'>
-                <a href={`/game/${featuredData[0].title}`} className='home-header home-font-size-large'> 
+                <a href={`/game/${featuredData[1].id}`} className='home-header home-font-size-large'> 
                     {clip_title(featuredData[1].title)}
                 </a>
             </div>
@@ -78,13 +89,13 @@ const Home = (props) => {
             {/*body for second game-image on right*/}
             <p className="home-text-left">
                 {/*clickable image*/}
-                <Link to={`/game/${featuredData[1].title}`}>
-                    <img alt="welcome!" src="https://picsum.photos/105?page=home" className='home-img-right'/>
+                <Link to={`/game/${featuredData[1].id}`}>
+                    <img alt="welcome!" src={gamesImages[1].image_url} className='home-img-right'/>
                 </Link>
                 {/*main body*/ }
-                {clip_article(featuredData[1].lorem)}
+                {clip_article(featuredData[1].description)}
                 {/*link to game*/}
-                <Link to={`/game/${featuredData[1].title}`}>{"<"}View Game{">"} </Link> 
+                <Link to={`/game/${featuredData[1].id}`}>{"<"}View Game{">"} </Link> 
             </p>
                 
                 
@@ -106,32 +117,32 @@ const Home = (props) => {
         <section className="featured-arcticles">
                 {/*header for first article*/}
                 <div className='home-text-center'> 
-                    <Link to={`./articles/${featuredData[2].title}`} className = 'home-header home-font-size-large'>
-                        {clip_title(featuredData[2].title)}
+                    <Link to={`./articles/${featuredData[2].article_name}`} className = 'home-header home-font-size-large'>
+                        {clip_title(featuredData[2].article_name)}
                     </Link>
                 </div>
                 {/*body for first article*/}
                 <p>
                     {/*first article content*/}
-                    {clip_article(featuredData[2].lorem)}
+                    {clip_article(featuredData[2].article_text)}
                     {/*first article link*/}
-                    <Link to={`./articles/${featuredData[2].title}`}> {"<"}Read full article{">"}</Link>
+                    <Link to={`./articles/${featuredData[2].article_name}`}> {"<"}Read full article{">"}</Link>
                 </p>
 
                 {/*header for second article*/}
                 <div className='home-text-center'> 
-                    <Link to={`./articles/${featuredData[3].title}`} className = 'home-header home-font-size-large'>
-                        {clip_title(featuredData[3].title)}
+                    <Link to={`./articles/${featuredData[3].article_name}`} className = 'home-header home-font-size-large'>
+                        {clip_title(featuredData[3].article_name)}
                     </Link>
                 </div>
 
                 {/*body for second article*/}
                 <p>
                     {/*second article content*/}
-                    {clip_article(featuredData[3].lorem)}
+                    {clip_article(featuredData[3].article_text)}
                                     
                     {/*second article link*/}
-                    <Link to={`./articles/${featuredData[3].title}`}  > {"<"}Read full article{">"}</Link>
+                    <Link to={`./articles/${featuredData[3].article_name}`}  > {"<"}Read full article{">"}</Link>
                 </p>
 
                 <div className='home-text-center'>
