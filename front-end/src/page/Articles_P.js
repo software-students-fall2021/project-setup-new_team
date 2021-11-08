@@ -8,17 +8,31 @@ import './Article.css'
 
 const Articles_P = (props) => 
 {
-	const data = props.a_data;
+
+	useEffect(() => {
+
+		// "fetch" from mockaroo
+		//console.log('fetching random article data!')
+		axios('http://localhost:3000/articles') // server is on port 3000, we are on port 3001. cant use .
+			.then((response) => {
+				props.setArticleData(response.data)
+		})
+		.catch((err) => 
+		{
+			// at this point it should never fail!
+			console.error(err)
+		})
+	}, [])
 
 	return (
 		<div className = "column">
 			<div className = "article-header">
-			<Typography variant = "h4" component = "div" className = "article-header"> 
+			<Typography variant = "h6" component = "div" className = "article-header"> 
 				User Created Articles
 			</Typography>
 			</div>
 		<div className = "article-body">
-			<ArticlesList a_data = {data} />
+			<ArticlesList a_data = {props.a_data} />
 		</ div>
 		</div>
 	);

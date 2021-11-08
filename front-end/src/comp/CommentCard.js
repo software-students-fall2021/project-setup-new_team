@@ -12,11 +12,11 @@ const CommentCard = ({ username, rating, comment }) =>
         <Card sx = {{ my: 3, minHeight: 120, justifySelf: "center", maxWidth: 400 }} className = "card">
             <CardContent>
             <Rating name="read-only" value={rating} readOnly sx ={{ paddingBottom: .5}}/>
-            <Typography variant="h5" color="text.secondary">
-                    { username }
+            <Typography variant="body1" color="text.secondary">
+                    { comment }
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                    { comment }
+                    { username }
                 </Typography>
             </CardContent>
         </Card>
