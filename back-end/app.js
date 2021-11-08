@@ -324,6 +324,41 @@ app.get("/games/:id", (req, res, next) => {
     }
 })
 
+
+//Upload game
+app.post('/upload', (req,res,next) => {
+    console.log(req.body)
+    //fields required in form so shouldn't have to check that they're there
+    if(!req.body.title){
+        res.status(400).json({error: 'Username is required'})
+    }
+    //missing file
+    if(!req.body.file){
+        res.status(400).json({error: 'Password is required'})
+    }
+    //missing description
+    if(req.body.thumbnail){
+        res.json({
+            status: 'Success!'
+        })
+    }else{
+        res.status(400).json({error: 'Unable to upload'})
+    }
+})
+
+//return id's of users games
+app.get('/user_games/:userid', (req,res,next) => {
+    if(process.env.DEBUG){
+        res.json({id1: 1, id2: 2})
+    }else{
+        //use global mockaroo key and return mock data
+        axios.get(`https://my.api.mockaroo.com/game.json?key=77851f20&id=${req.params.userid}`) //ids of users games
+        .then(response => res.json(response.data))
+        .catch(err => next(err))
+    }
+    
+})
+
 app.post("/games_search", (req, res, next) => {
     console.log(req.body)
     if(!req.body.id) {
@@ -335,6 +370,7 @@ app.post("/games_search", (req, res, next) => {
     }
     res.json({status: "Return game info here"})
 })
+
 
 
 app.get('/query', (req, res, next) => {
