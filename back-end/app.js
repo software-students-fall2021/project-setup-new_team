@@ -80,6 +80,49 @@ let staticArticleData = {};
     }
 })()
 
+// when a user requests to upload an article
+app.post('/articles/upload', (req, res, next) => {
+
+    const article_name = req.body.article_name;
+    const articleObj = staticArticleData.find(article => article.article_name == article_name);
+    
+    if(!articleObj)
+    {
+        const text   = req.body.article_text;
+        const author = req.body.poster_name;
+        const imgurl = req.body.image_url;
+        const rating = req.body.rating;
+
+        if(!text || !author || !imgurl || !rating)
+        {
+            console.log(`${text} ${author} ${imgurl} ${rating}`);
+
+            res.json({
+                success: false,
+                error: "article failed to upload."
+            })
+        }
+        else
+        {
+            console.log("successful upload here");
+
+            staticArticleData.push(({
+                // we need to do this in order to append comments to each article.
+                article_name: article_name,
+                article_text: text,
+                image_url   : imgurl,
+                poster_name : author,
+                rating      : rating,
+                comments    : []
+            }));
+
+            res.json({
+                success: true
+            });
+        }
+    }
+})
+
 // when a user request to post a comment
 app.post('/articles/:name/comment', (req, res, next) => {
     // with help with express's jsonParser this is very easy :)!
