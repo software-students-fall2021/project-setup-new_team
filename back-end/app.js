@@ -324,6 +324,19 @@ app.get("/games/:id", (req, res, next) => {
     }
 })
 
+app.post("/games_search", (req, res, next) => {
+    console.log(req.body)
+    if(!req.body.id) {
+        res.status(400).json({error: 'without an ID you cant get a game!' })
+    }
+    else {
+        //compare id with database when available
+        console.log("game info")
+    }
+    res.json({status: "Return game info here"})
+})
+
+
 app.get('/query', (req, res, next) => {
     const search = req.query
     res.json = search
