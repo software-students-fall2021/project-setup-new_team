@@ -2,13 +2,13 @@ import axios         from 'axios';
 import React, { useState, useEffect } from 'react'
 import { styled }    from '@mui/system';
 import { useParams } from "react-router-dom";
+import Divider       from "@mui/material/Divider"
 import Rating        from '@mui/material/Rating';
 import Button        from '@mui/material/Button';
 import Typography    from '@mui/material/Typography';
 import TextField     from '@mui/material/TextField';
 
 import SendIcon      from '@mui/icons-material/Send';
-// import CommentJSON   from './../data/var-game-comments.json';
 import CommentList   from './../comp/CommentList';
 
 import './Article.css'
@@ -45,8 +45,7 @@ const Article_P = (props) => {
                 setArticleData(response.data.data))
         .catch((err) => 
         {
-            // error! bad bad bad!  
-            console.log(`uh oh! Can't request anymore data man :(`)
+            // article doesn't exist! very bad.
             console.error(err)
         })
     }, [])
@@ -65,7 +64,9 @@ const Article_P = (props) => {
                 <Typography variant="body1" component = "div" className = "header" sx= {{ py: .5, textAlign: "left"}}>
                     By: {article.poster_name}
                 </Typography>
-                <Rating name="read-only" value={article.rating / 20} readOnly sx ={{ paddingBottom: .5}}/>
+                <Rating name="read-only" value={article.rating / 20} readOnly sx ={{ paddingBottom: .5}}/>    
+                <img src= { article.image_url } />
+                <Divider sx ={{ my: 1 }}/>
                 <Typography variant="body2" component = "div" className = "header" sx ={{paddingBottom: 2}}>
                         {article.article_text}
                 </Typography>
