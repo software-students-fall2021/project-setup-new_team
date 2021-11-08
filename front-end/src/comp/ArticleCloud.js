@@ -8,20 +8,20 @@ import Typography from '@mui/material/Typography';
 
 import './ArticleCloud.css';
 
-const ArticleCard = ({ a_title, a_tags, a_desc }) => 
+const ArticleCard = ({ article_name, article_poster, article_text }) => 
 {
     return (
-        <Link to={`./articles/${a_title}`} className = "link">
+        <Link to={`./articles/${article_name}`} className = "link">
             <Card sx = {{ my: 3, minHeight: 200, justifySelf: "center", maxWidth: 400 }} className = "card">
                 <CardContent>
                 <Typography variant="h5" color="text.secondary">
-                        {a_title}
+                        {article_name}
                     </Typography>
                 <Typography variant="body1" color="text.secondary">
-                        {a_tags}
+                        {article_poster}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        {a_desc.substring(0, 150)}
+                        {article_text}
                     </Typography>
                 </CardContent>
             </Card>

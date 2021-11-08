@@ -201,4 +201,3 @@ describe('Home Page', function() {
         })
     })
 })
-

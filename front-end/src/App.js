@@ -30,44 +30,10 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 
-// for debugging since I used all my mockaroo GETs
-import jsonData from './data/var-game.json';
-
 function App() {
-	/*
-		Problem: Article_P's display information depends on data that
-		is currently only located in Articles_P.
-		Solution: Initialize/request our data in startup, and pass the data object
-		into each component separately. This will probably not be an issue when the
-		ACTUAL back end is implemented. Just a clunky scenario.
-	*/
-	
 	// just like the professor showed us: use [] to execute only once
 	const [data, setData] = useState([])
 	
-	// pull from mockaroo
-	useEffect(() => {
-
-		// "fetch" from mockaroo
-		console.log('fetching random article data!')
-		axios('https://my.api.mockaroo.com/articles.json?key=89ff35f0')
-			.then((response) => {
-				setData(response.data)
-		})
-		.catch((err) => 
-		{
-			// error! bad bad bad!	
-			console.log(`uh oh! Can't request anymore data man :(`)
-			console.error(err)
-
-			// just like professor, make back up data to send to
-			// front-end
-			setData(jsonData)
-		})
-	}, [])
-
-	
-
 	return (
 	<>
 		<CssBaseline />
@@ -78,10 +44,10 @@ function App() {
 				<div className = "app-body">
 					<Switch>
 						<Route path="/" exact> <Home b_data = {data}/> </Route>
-						<Route path="/articles" exact> <Articles_P a_data = {data} /> </Route>
+						<Route path="/articles" exact> <Articles_P a_data = {data} setArticleData = { setData } /> </Route>
 						<Route path="/articles/:name"> <Article_P a_data = {data} /> </Route>
-						<Route path= "/games" component={GamesList}></Route>
-						<Route path= "/game" component={GamesPage}></Route>
+						<Route path= "/games"><GamesList/></Route>
+						<Route path= "/game"><GamesPage/></Route>
 						<Route path= "/comments" component={CommentsPage}></Route>
 						<Route path="/legal" exact><Legal/></Route>
 						<Route path="/login"><Login/></Route>
