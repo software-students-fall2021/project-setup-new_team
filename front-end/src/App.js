@@ -49,8 +49,8 @@ function App() {
 	useEffect(() => {
 
 		// "fetch" from mockaroo
-		console.log('fetching random article data!')
-		axios('https://my.api.mockaroo.com/articles.json?key=89ff35f0')
+		//console.log('fetching random article data!')
+		axios('http://localhost:3000/articles') // server is on port 3000, we are on port 3001. cant use .
 			.then((response) => {
 				setData(response.data)
 		})

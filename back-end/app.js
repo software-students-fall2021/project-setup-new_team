@@ -49,20 +49,80 @@ let staticArticleData = {};
         // fuck async for now, since we're doing this
         // on start time
         const debug_mock = fs.readFileSync('./article_schema.json'); 
-        staticArticleData = JSON.parse(debug_mock);
+        staticArticleData = JSON.parse(debug_mock).map(article => 
+        ({
+            // we need to do this in order to append comments to each article.
+            article_name: article.article_name,
+            article_text: article.article_text,
+            image_url   : article.image_url,
+            poster_name : article.poster_name,
+            rating      : article.rating,
+            comments    : []
+        }));
 
         // article_data.map(article => console.log(article))
     }
     else
     {
-        console.log("fetching data from mockaroo")
+        console.log("actually fetching data from mockaroo")
         axios.get(`https://my.api.mockaroo.com/article_schema.json?key=${process.env.ARTICLE_API_KEY}`) // article mock data
-            .then(response => staticArticleData = response.data)
+            .then(response => staticArticleData = (response.data).map(article => 
+            ({
+            // we need to do this in order to append comments to each article.
+                article_name: article.article_name,
+                article_text: article.article_text,
+                image_url   : article.image_url,
+                poster_name : article.poster_name,
+                rating      : article.rating,
+                comments    : []           
+            })))
             .catch(err => console.log(err.stack))
     }
 })()
 
+// when a user request to post a comment
+app.post('/articles/:name/comment', (req, res, next) => {
+    // with help with express's jsonParser this is very easy :)!
+    // I'm going to keep this functionality just like 4chan and other
+    // traditional forum spaces that allow for anonymous posting. Post 
+    // anything you want and say you are whoever you want to be!
 
+    const name     = req.params.name;
+    let articleObj = staticArticleData.find(article => article.article_name == name);
+    
+    if(!articleObj)
+    {
+        res.json({success: false, error: "how did you even get here!? bad coder detected."});
+        return;
+    }
+
+    const _username    = req.body.user;
+    const _comment     = req.body.comment; 
+    const _rating      = req.body.rating;
+
+    if(!_username || !_comment || !_rating)
+        res.json({success: false, error: `missing something: ${_username} ${_comment} ${_rating} !`})
+    else
+    {
+        // some sanity checks here if you want to prevent toxicity:
+
+        // append comment object to our articleObj
+        const comObj = ({
+            username: _username,
+            comment:  _comment,
+            rating:  _rating,
+        }); 
+
+        articleObj.comments.push(comObj);
+        res.json({success:true, comObj});
+
+        // send our comment data back to append to front-end's local copy of 
+        // comment
+    }
+})
+
+
+// get the trimmed article data from the express server to preview all articles -DC @ 6:53 PM Nov. 7th, 2021
 app.get('/articles', (req, res, next) => {      
     res.json(staticArticleData.map((article) => 
     ({ 
@@ -72,6 +132,7 @@ app.get('/articles', (req, res, next) => {
     })))
 })
 
+// get the article data from the express server -DC @ 6:53 PM Nov. 7th, 2021
 app.get('/articles/:name', (req, res, next) => {
     const name       = req.params.name;
     const articleObj = staticArticleData.find(article => article.article_name === name);
