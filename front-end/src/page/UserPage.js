@@ -122,11 +122,15 @@ const UserPage = (props) => {
                             content={<>
                                 <form action="http://localhost:3000/upload" method="POST" onSubmit={handleSubmit}>
                                     <input type="text" placeholder="Title" name="title" required/>
+                                    <br/>
+                                    <br/>
                                     <label>
                                         Select game files:
                                         <input type="file" placeholder="File" name="file" required/>
                                     </label>
                                     <input type="text" placeholder="Description" name="description" required/>
+                                    <br/>
+                                    <br/>
                                     <label>
                                         Choose Thumbnail:
                                         <input type="file" placehodler="Thumbnail" name="thumbnail" required/>

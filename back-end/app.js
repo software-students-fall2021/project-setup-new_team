@@ -215,9 +215,7 @@ app.get('/games_data/:id', (req,res,next) => {
 
 app.get('/images/:id', (req,res,next)  => {
     //picsum has no data limit so we don't need debug mode
-    axios.get(`https://picsum.photos/id/${req.params.id}/info`) //will return JSON for _specific photo_ from picsum
-    .then(response => res.json(response.data))
-    .catch(err => next(err))
+    res.json({image_url : `https://picsum.photos/id/${req.params.id}/105`})
 })
 
 
