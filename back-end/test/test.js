@@ -143,7 +143,7 @@ describe('Home Page', function() {
     describe('#home', function() {
         //function to make GET request to top articles/games
         it('should return two IDs when querying for top games', async function() {
-            request(app).get('/top_games').end(function(err, res) {
+            request(app).get('/static/top_games.json').end(function(err, res) {
                 assert(res.body.id1);
                 assert(res.body.id2);
                 assert(Number.isInteger(res.body.id1));
@@ -151,7 +151,7 @@ describe('Home Page', function() {
             });
         })
         it('should return two IDs when querying for top articles', async function() {
-            request(app).get('/top_games').end(function(err, res) {
+            request(app).get('/static/top_articles.json').end(function(err, res) {
                 assert(res.body.id1);
                 assert(res.body.id2);
                 //articles are not guaranteed to be integers
