@@ -276,26 +276,32 @@ app.post('/register', (req,res,next) => {
     console.log(req.body)
     //missing username
     if(!req.body.username){
-        res.status(400).json({error: 'Username is required'})
+        res.status(400).json({error: 'Username is required'}).end();
+        return;
     }
     //missing email
     if(!req.body.email){
-        res.status(400).json({error: 'Email is required'})
+        res.status(400).json({error: 'Email is required'}).end();
+        return;
     }
     //missing password
     if(!req.body.password){
-        res.status(400).json({error: 'Password is required'})
+        res.status(400).json({error: 'Password is required'}).end();
+        return;
     }
     //missing password confirmation
     if(!req.body.confirm_password){
-        res.status(400).json({error: '{Password confirmation is required'})
+        res.status(400).json({error: '{Password confirmation is required'}).end();
+        return;
     }
     //passwords do not match
     if(req.body.password != req.body.confirm_password){
-        res.status(400).json({error: 'Passwords do not match'})
+        res.status(400).json({error: 'Passwords do not match'}).end();
+        return;
     }
     if(req.body.password.length < 6){
-        res.status(400).json({error: 'Password must be at least 6 characters'})
+        res.status(400).json({error: 'Password must be at least 6 characters'}).end();
+        return;
     }
     //link to database goes here
 
@@ -311,19 +317,23 @@ app.post('/login', (req,res,next) => {
     console.log(req.body)
     //missing username
     if(!req.body.username){
-        res.status(400).json({error: 'Username is required'})
+        res.status(400).json({error: 'Username is required'}).end();
+        return;
     }
     //missing password
     if(!req.body.password){
-        res.status(400).json({error: 'Password is required'})
+        res.status(400).json({error: 'Password is required'}).end();
+        return;
     }
                 //we'll check password against database instead of comparing a string
     const user = users[_.findIndex(users, {username: req.body.username})]
     if(!user){
-        res.status(401).json({error: 'User not found'})
+        res.status(401).json({error: 'User not found'}).end();
+        return;
     }
     else if(req.body.password != user.password){
-        res.status(401).json({error: 'Password does not match records'})
+        res.status(401).json({error: 'Password does not match records'}).end();
+        return;
     }else{
         //success! generate a token
         const payload = {id: user.id, username: user.username}
@@ -335,7 +345,7 @@ app.post('/login', (req,res,next) => {
 app.get('/logout',  (req, res) => {
     res.json({
         success: true,
-        message: 'Logged out'
+        message: 'Ok'
     })
 })
 

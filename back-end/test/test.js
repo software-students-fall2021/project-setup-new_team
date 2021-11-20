@@ -1,6 +1,6 @@
 const assert = require('assert');
-const { default: axios } = require('axios');
-const fetch = require('node-fetch');    
+const request = require('supertest');
+const app = require('../app');
 
 function getRandomInt(max){
     return Math.floor(Math.random() * max);
@@ -8,117 +8,159 @@ function getRandomInt(max){
 
 describe('Register', function() {
     describe('#register', function() {
-        //function to make POST request to register
-        function makeRequest(x){
-            return new Promise(resolve => {
-                axios.post('http://localhost:3000/register', x)
-                .then(function (response) {
-                    resolve(response.data.status);
-                })
-                .catch(function (error) {
-                    resolve(error.response.data.error);
-                });
-            });
-        }
-        it('should return error when no username given', async function() {
-            const result = await makeRequest({
-                email: 'email@mail.dom',
-                password: 'password',
-                confirm_password: 'password'
-            })
-            console.log('result is ')
-            console.log(result.error)
-            assert.equal(result, 'Username is required');
+        it('should return error when no username given', function() {
+            request(app).post('/register').send({
+                    email: 'mail@mail.com',
+                    password: 'password',
+                    confirm_password: 'password'
+                }).end(function(err, res) {
+                    assert.equal(res.status, 400);
+                    assert.equal(res.body.error, 'Username is required');
+                }
+            );
         })
+        
         it('should return error when no email given', async function() {
-            const result = await makeRequest({
-                username: 'username',
-                password: 'password',
-                confirm_password: 'password'
-            })
-            assert.equal(result, 'Email is required');
+            request(app).post('/register').send({
+                    username: 'username',
+                    password: 'password',
+                    confirm_password: 'password'
+                }).end(function(err, res) {
+                    assert.equal(res.status, 400);
+                    assert.equal(res.body.error, 'Email is required');
+                }
+            );
         })
         it('should return error when no password given', async function() {
-            const result = await makeRequest({
-                username: 'username',
-                email: 'email@mail.dom',
-                confirm_password: 'password'
-            })
-            assert.equal(result, 'Password is required');
+            request(app).post('/register').send({
+                    username: 'username',
+                    email: 'mail@mail.com',
+                    confirm_password: 'password'
+                }).end(function(err, res) {
+                    assert.equal(res.status, 400);
+                    assert.equal(res.body.error, 'Password is required');
+                }
+            );
         })
         it('should return error when passwords are not equal', async function() {
-            const result = await makeRequest({
-                username: 'username',
-                email: 'email@mail.dom',
-                password: 'password',
-                confirm_password: 'pasdlila'
-            })
-            assert.equal(result, 'Passwords do not match');
+            request(app).post('/register').send({
+                    username: 'username',
+                    email: 'mail@mail.com',
+                    password: 'password',
+                    confirm_password: 'cat dog blueberry'
+                }).end(function(err, res) {
+                    assert.equal(res.status, 400);
+                    assert.equal(res.body.error, 'Passwords do not match');
+                }
+            );
         })
         it('should return error when password is less than 6 characters', async function() {
-            const result = await makeRequest({
-                username: 'username',
-                email: 'email@mail.dom',
-                password: 'pass',
-                confirm_password: 'pass'
-            })
-            assert.equal(result, 'Password must be at least 6 characters');
+            request(app).post('/register').send({
+                    username: 'username',
+                    email: 'mail@mail.com',
+                    password: 'cat',
+                    confirm_password: 'cat'
+                }).end(function(err, res) {
+                    assert.equal(res.status, 400);
+                    assert.equal(res.body.error, 'Password must be at least 6 characters');
+                }
+            );
         })
         it('should return success otherwise', async function() {
-            const result = await makeRequest({
-                username: 'username',
-                email: 'email@mail.dom',
-                password: 'password',
-                confirm_password: 'password'
-            })
-            assert.equal(result, 'Success!');
+            request(app).post('/register').send({
+                    username: 'username',
+                    email: 'mail@mail.com',
+                    password: 'password',
+                    confirm_password: 'password'
+                }).end(function(err, res) {
+                    assert.equal(res.status, 200);
+                    assert.equal(res.body.status, 'Success!');
+                }
+            );
         })
     })
 });
 
 describe ('Login', function() {
     describe('#login', function() {
-        //function to make POST request to login
-        function makeRequest(x){
-            return new Promise(resolve => {
-                axios.post('http://localhost:3000/login', x)
-                .then(function (response) {
-                    resolve(response.data.status);
-                })
-                .catch(function (error) {
-                    resolve(error.response.data.error);
-                });
-            });
-        }
         it('should return error when no username given', async function() {
-            const result = await makeRequest({
-                password: 'password'
-            })
-            assert.equal(result, 'Username is required');
+            request(app).post('/login').send({
+                    password: 'password'
+                }).end(function(err, res) {
+                    assert.equal(res.status, 400);
+                    assert.equal(res.body.error, 'Username is required');
+                }
+            );
         })
         it('should return error when no password given', async function() {
-            const result = await makeRequest({
-                username: 'username'
-            })
-            assert.equal(result, 'Password is required');
+            request(app).post('/login').send({
+                    username: 'username'
+                }).end(function(err, res) {
+                    assert.equal(res.status, 400);
+                    assert.equal(res.body.error, 'Password is required');
+                }
+            );
         })  
+        it('should return 401 error if user does not exist', async function() {
+            request(app).post('/login').send({
+                    username: 'i do not exist',
+                    password: 'password'
+                }).end(function(err, res) {
+                    assert.equal(res.status, 401);
+                    assert.equal(res.body.error, 'User not found')
+                }
+            );
+        })
         it('should return error if password does not match records', async function() {
-            const result = await makeRequest({
-                username: 'username',
-                password: 'not_my_password'
-            })
-            assert.equal(result, 'Password submitted does not match our records');
+            request(app).post('/login').send({
+                    username: 'janedoe1',
+                    password: 'password'
+                }).end(function(err, res) {
+                    assert.equal(res.status, 401);
+                    assert.equal(res.body.error, 'Password does not match records')
+                }
+            );
         })
         it('should return success otherwise', async function() {
-            const result = await makeRequest({
-                username: 'username',
-                password: 'password'
-            })
-            assert.equal(result, 'Success!');
+            request(app).post('/login').send({
+                    username: 'janedoe1',
+                    password: 'password2'
+                }).end(function(err, res) {
+                    assert.equal(res.status, 200);
+                    assert(res.body.token);
+                }
+            );
+        })
+        it('should return success when logging out', async function() {
+            request(app).get('/logout').send().end(function(err, res) {
+                assert.equal(res.status, 200);
+                assert.equal(res.body.message, 'Ok');
+            });
+        });
+    })
+})
+describe('Home Page', function() {
+    describe('#home', function() {
+        //function to make GET request to top articles/games
+        it('should return two IDs when querying for top games', async function() {
+            request(app).get('/top_games').end(function(err, res) {
+                assert(res.body.id1);
+                assert(res.body.id2);
+                assert(Number.isInteger(res.body.id1));
+                assert(Number.isInteger(res.body.id2));
+            });
+        })
+        it('should return two IDs when querying for top articles', async function() {
+            request(app).get('/top_games').end(function(err, res) {
+                assert(res.body.id1);
+                assert(res.body.id2);
+                //articles are not guaranteed to be integers
+            });
         })
     })
 })
-
+/*
+deprecated functions: update tests
 describe('Article', function() {
     describe('#article', function() {
         //function to make GET request to articles
@@ -175,29 +217,5 @@ describe ('Game', function() {
     })
 })
 
-describe('Home Page', function() {
-    describe('#home', function() {
-        //function to make GET request to top articles/games
-        function requestTop(x){
-            return new Promise(resolve => {
-                axios.get(`http://localhost:3000/top_${x}`)
-                    .then(res => {resolve(res.data);})
-                    .catch(err => {resolve(err.response.data);});
-            });
-        }
-        it('should return two IDs when querying for top games', async function() {
-            const result = await requestTop('games');
-            assert(result.id1);
-            assert(result.id2);
-            assert(Number.isInteger(result.id1));
-            assert(Number.isInteger(result.id2));
-        })
-        it('should return two IDs when querying for top articles', async function() {
-            const result = await requestTop('articles');
-            assert(result.id1);
-            assert(result.id2);
-            assert(Number.isInteger(result.id1));
-            assert(Number.isInteger(result.id2));
-        })
-    })
-})
+
+*/
