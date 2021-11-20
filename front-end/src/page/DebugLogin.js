@@ -23,7 +23,7 @@ const DebugLogin = (props) => {
             .catch(err => {
                 console.log(err);
             })
-    }, [])
+    }, [jwtToken])
     
     const handleSubmit = (event) => {
         event.preventDefault();

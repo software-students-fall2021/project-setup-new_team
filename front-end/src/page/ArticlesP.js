@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import jwt from 'jsonwebtoken';
 import { Link } from 'react-router-dom';
 
 import Typography from '@mui/material/Typography';
@@ -19,12 +18,10 @@ const UploadButton = styled(Button)(({ theme }) => ({
     },
 }));
 
-const fs = require('fs');
 
-const Articles_P = (props) => 
+const ArticlesP = (props) => 
 {
     const jwtToken = localStorage.getItem("loginToken") 
-	const decodedToken = jwt.decode(jwtToken)
 
 	const [file, setFile] = useState();
 	const [isFileReal, setFileIsReal] = useState(false);
@@ -40,7 +37,7 @@ const Articles_P = (props) =>
 			// at this point it should never fail!
 			console.error(err)
 		})
-	}, [])
+	}, [props])
 
 	return (
 		<div className = "column">
@@ -52,13 +49,15 @@ const Articles_P = (props) =>
 			{jwtToken && <>
 				<input type="file" name="file" onChange = {(event) =>
 				{
-				{/* https://www.pluralsight.com/guides/uploading-files-with-reactjs */}
+				/* https://www.pluralsight.com/guides/uploading-files-with-reactjs */
 					setFile(event.target.files[0]);
 					setFileIsReal(true);
 				}}/>
 				<UploadButton variant="contained" 
 	                onClick = {(event) => 
                 	{ 
+						if(!isFileReal){return;} //Added this line, app crashed without it when no file
+
                 		// this functionality seems to be a bit more complicated than
                 		// i had imagined. I'll need to review a bit more on how to convert
                 		// a basic file object into a JSON-esque object to then. Maybe
@@ -97,4 +96,4 @@ const Articles_P = (props) =>
 }
 
 // <ArticleCard a_user = "Dancuz4189" a_name = "How To Create a 2D Platformer" a_tags = {["Mechanics", "Physics" , "Mathematics","\0"]} a_desc = "hello" />
-export default Articles_P;
+export default ArticlesP;

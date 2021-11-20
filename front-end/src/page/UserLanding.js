@@ -8,12 +8,12 @@ TODO: add dynamic links in menu so redirect is unnecessary -A
     token is updated from any page- but should be doable)
 */
 const UserLanding = (props) => {
-    
-    const jwtToken = localStorage.getItem("loginToken") 
     // ^ synchronous so shouldn't cause timing problems
 
     const [redir, setRedir] = React.useState("");
     useEffect(() => {
+    
+        const jwtToken = localStorage.getItem("loginToken") 
         if(jwtToken){   
             const decoded = jwt.decode(jwtToken);
             setRedir(`user/${decoded.id}`);
@@ -24,7 +24,8 @@ const UserLanding = (props) => {
     return (
 
         <div>
-            <meta http-equiv="refresh" content={`0; url=${redir}`} />
+            {redir ? <meta http-equiv="refresh" content={`0; url=${redir}`} /> : null}
+            Redirecting...
         </div>
     )
 

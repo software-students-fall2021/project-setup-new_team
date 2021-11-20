@@ -40,25 +40,26 @@ const UserPage = (props) => {
           })
     }
 
-    async function getPageData(){
-        const gamelist = await getQuery(`user_games/${user.id}`);
-        const game1 = await getQuery(`games_data/${gamelist.id1}`);
-        const game2 = await getQuery(`games_data/${gamelist.id2}`);
-        setUserGames([game1, game2])
-    }
+   
     useEffect(() => {
+        async function getPageData(){
+            const gamelist = await getQuery(`user_games/${user.id}`);
+            const game1 = await getQuery(`games_data/${gamelist.id1}`);
+            const game2 = await getQuery(`games_data/${gamelist.id2}`);
+            setUserGames([game1, game2])
+        }
         console.log("getting page data")
         getPageData()
-        if(decodedToken && user.id == decodedToken.id){
+         // eslint-disable-next-line
+        if(decodedToken && user.id == decodedToken.id){//yes it's supposed to be comparing equality WITH casting
             setShowUpload(true)
         }
-    }, [])
+    }, [decodedToken, user])
 
     const handleSubmit = (event) => {
         event.preventDefault();
         //send data to server
         axios.post(`http://localhost:3000/upload/${user.id}`, {
-            headers: { Authorization: `JWT ${jwtToken}` }, 
             title: event.target.title.value,
             file: event.target.files.value,
             description: event.target.description.value,
@@ -133,7 +134,7 @@ const UserPage = (props) => {
                                     <br/>
                                     <label>
                                         Select game files:
-                                        <input type="file" placeholder="File" name="file" required multiple/>
+                                        <input type="file" placeholder="File" name="files" required multiple/>
                                     </label>
                                     <input type="text" placeholder="Description" name="description" required/>
                                     <br/>
@@ -144,6 +145,8 @@ const UserPage = (props) => {
                                     </label>
                                     {/* unique ID */}
                                     <input type="submit" value="Upload" className="upload-button"/>
+
+                                    <p>{uploadMessage}</p>
                                 </form> 
                             </>}
                             handleClose={togglePopup}

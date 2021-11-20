@@ -1,7 +1,5 @@
 import axios         from 'axios';
 import React, { useState, useEffect } from 'react'
-import jwt from 'jsonwebtoken';
-import {Link} from 'react-router-dom';
 
 import { styled }    from '@mui/system';
 import { useParams } from "react-router-dom";
@@ -12,7 +10,7 @@ import Typography    from '@mui/material/Typography';
 import TextField     from '@mui/material/TextField';
 
 import SendIcon      from '@mui/icons-material/Send';
-import CommentList   from './../comp/CommentList';
+import CommentList   from '../comp/CommentList';
 
 import './Article.css'
 
@@ -29,10 +27,9 @@ const SendButton = styled(Button)(({ theme }) => ({
 // the primary way to leave this page and head back into articles
 
 // using url parameters
-const Article_P = (props) => {
+const ArticleP = (props) => {
     const jwtToken = localStorage.getItem("loginToken")
-    const decodedToken = jwt.decode(jwtToken)
-
+    console.log(jwtToken)
     const [article, setArticleData]     = useState(null);
     const [commentData, setCommentData] = useState("");
     const [userData, setUserData]       = useState("");
@@ -54,7 +51,7 @@ const Article_P = (props) => {
             // article doesn't exist! very bad.
             console.error(err)
         })
-    }, [])
+    }, [name])
 
     if(!article) { return <h1>Error: 404 </h1> }
     
@@ -71,7 +68,7 @@ const Article_P = (props) => {
                     By: {article.poster_name}
                 </Typography>
                 <Rating name="read-only" value={article.rating / 20} readOnly sx ={{ paddingBottom: .5}}/>    
-                <img src= { article.image_url } />
+                <img src= { article.image_url } alt="article" />
                 <Divider sx ={{ my: 1 }}/>
                 <Typography variant="body2" component = "div" className = "header" sx ={{paddingBottom: 2}}>
                         {article.article_text}
@@ -135,4 +132,4 @@ const Article_P = (props) => {
     );
 }  
 
-export default Article_P;
+export default ArticleP;

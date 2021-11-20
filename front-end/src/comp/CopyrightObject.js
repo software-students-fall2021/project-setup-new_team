@@ -1,4 +1,4 @@
-import { Copyright } from "@mui/icons-material";
+//import { Copyright } from "@mui/icons-material";
 import Typography from '@mui/material/Typography';
 
 const CopyrightObject = () => {

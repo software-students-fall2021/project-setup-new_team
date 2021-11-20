@@ -30,11 +30,14 @@ const Home = (props) => {
         })
   }
   //gets all page data asynchronously
-  async function getPageData(){
-        const topGames = await getQuery("static/top_games")
+  
+  useEffect(() => {
+     console.log("getting page data")
+     async function getPageData(){
+        const topGames = await getQuery("static/top_games.json")
         const thumb1 = await getQuery(`images/${topGames.id1}`);
         const thumb2 = await getQuery(`images/${topGames.id2}`);
-        const topArticles = await getQuery("static/top_articles");
+        const topArticles = await getQuery("static/top_articles.json");
         const featuredGame1 = await getQuery(`games/${topGames.id1}`);
         const featuredGame2 = await getQuery(`games/${topGames.id2}`);
         const featuredArticle1 = await getQuery(`articles/${topArticles.id1}`);
@@ -43,9 +46,7 @@ const Home = (props) => {
         console.log(thumb1);
         console.log(topGames)
         setGamesImages([thumb1, thumb2])
-  }
-  useEffect(() => {
-     console.log("getting page data")
+    }
      getPageData()
   }, [])
   
