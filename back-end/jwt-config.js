@@ -7,7 +7,7 @@ const _ = require("lodash") // the lodash module has some convenience functions 
 // set up some JWT authentication options
 let jwtOptions = {}
 jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderWithScheme("JWT") // look for the Authorization request header
-jwtOptions.secretOrKey = process.env.JWT_KEY // an arbitrary string used during encryption - see the .env file
+jwtOptions.secretOrKey = process.env.JWT_KEY ? process.env.JWT_KEY : "string to make circle ci happy" // an arbitrary string used during encryption - see the .env file
 // console.log(jwtOptions) // debug to make sure the secret from the .env file is loaded correctly
 // passport can work with many authentication systems... here we are setting some middleware code for using JWT that we'll pass to passport to use
 const jwtStrategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
