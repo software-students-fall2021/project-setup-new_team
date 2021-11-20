@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import jwt from 'jsonwebtoken';
+import { Link } from 'react-router-dom';
 
 import Typography from '@mui/material/Typography';
 import ArticlesList from '../comp/ArticlesList';
@@ -21,6 +23,9 @@ const fs = require('fs');
 
 const Articles_P = (props) => 
 {
+    const jwtToken = localStorage.getItem("loginToken") 
+	const decodedToken = jwt.decode(jwtToken)
+
 	const [file, setFile] = useState();
 	const [isFileReal, setFileIsReal] = useState(false);
 
@@ -44,6 +49,7 @@ const Articles_P = (props) =>
 				User Created Articles
 			</Typography>
 			<>
+			{jwtToken && <>
 				<input type="file" name="file" onChange = {(event) =>
 				{
 				{/* https://www.pluralsight.com/guides/uploading-files-with-reactjs */}
@@ -63,7 +69,9 @@ const Articles_P = (props) =>
 
 
 
-	                		axios.post(`http://localhost:3000/articles/upload`, result).then(response => {
+	                		axios.post(`http://localhost:3000/articles/upload`, result, {
+								headers: { Authorization: `JWT ${jwtToken}` }
+							}).then(response => {
 
 	                		}).catch(response => {
 	                			console.log("file upload failed! very fucking bad!");
@@ -77,6 +85,8 @@ const Articles_P = (props) =>
 	            	sx={{ backgroundColor:"darkred", maxWidth:96}}> 
 	            	Upload 
 	            </UploadButton>
+			</>}
+			{!jwtToken && <h4> <Link to="/login">Login</Link> to create articles </h4>}	
 			</>
 			</div>
 		<div className = "article-body">

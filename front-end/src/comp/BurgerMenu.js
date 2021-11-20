@@ -20,8 +20,6 @@ const BurgerMenu = ({ anchor, onClose, open}) => {
             <Link to="/"><MenuItem onClick={onClose}>Home</MenuItem> </Link>
             <Link to = "/games"><MenuItem onClick={onClose}>Games</MenuItem></Link>
             <Link to="/articles"><MenuItem onClick={onClose}>Articles</MenuItem></Link>
-            <MenuItem onClick={onClose}>Forums</MenuItem>
-            <MenuItem onClick={onClose}>About</MenuItem>
         </Menu>
     );
 }

@@ -20,7 +20,10 @@ import Legal from './page/Legal';
 import Login from './page/Login';
 import Registration from './page/Registration';
 import UserPage from'./page/UserPage';
+import UserLanding from './page/UserLanding';
 import Upload from './page/Upload';
+
+import DebugLogin from './page/DebugLogin';
 
 import './App.css';
 
@@ -46,14 +49,16 @@ function App() {
 						<Route path="/" exact> <Home b_data = {data}/> </Route>
 						<Route path="/articles" exact> <Articles_P a_data = {data} setArticleData = { setData } /> </Route>
 						<Route path="/articles/:name"> <Article_P a_data = {data} /> </Route>
-						<Route path= "/games"><GamesList/></Route>
-						<Route path= "/game"><GamesPage/></Route>
+						<Route path= "/games" exact><GamesList/></Route>
+						<Route path= "/games/:id"><GamesPage/></Route>
 						<Route path= "/comments" component={CommentsPage}></Route>
 						<Route path="/legal" exact><Legal/></Route>
 						<Route path="/login"><Login/></Route>
 						<Route path="/register"><Registration/></Route>
-						<Route path ="/userpage" exact><UserPage/></Route>
+						<Route path="/user" exact> <UserLanding/></Route>
+						<Route path ="/user/:id" exact><UserPage/></Route>
 						<Route path ="/upload" exact><Upload/></Route>
+						<Route path ="/logindebug" exact><DebugLogin/></Route>
 						<Route> {<h1>Error: 404</h1>} </Route>
 					</Switch>
 				</div>

@@ -7,14 +7,22 @@ const axios = require('axios')
 require('dotenv').config({silent: true})
 const morgan = require('morgan')
 const cors = require('cors')
+const _ = require('lodash')
+const jwt = require('jsonwebtoken')
+const passport = require('passport')
 
-// json database for articles -DC
+app.use(passport.initialize())
+const users = require("./user_data.js") //TODO: replace with database -AP
+const {jwtOptions, jwtStrategy} = require('./jwt-config.js')
+passport.use(jwtStrategy)
+
 
 app.use(morgan('dev'))
 app.use(cors()) //enables CORS for _all_ requests 
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
+
 
 app.use('/static', express.static('public')) // only need this when we add static files: dead code for now
 
@@ -219,6 +227,25 @@ app.get('/images/:id', (req,res,next)  => {
 })
 
 
+app.get('/logintest', 
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    console.log(req);
+    res.json({
+       status: 'congrats you are logged in!'
+    })
+  }
+)
+app.post('/logintest',
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+        res.json({
+            status: `message received! (${req.body.message})`
+        })
+    },
+)
+
+
 //return indices of featured articles for home page
 app.get('/top_articles', (req,res,next) => {
     if(process.env.DEBUG){
@@ -273,9 +300,12 @@ app.post('/register', (req,res,next) => {
     //link to database goes here
 
     res.json({
+        success: true,
         status: 'Success!'
     })
 })
+
+
 
 app.post('/login', (req,res,next) => {
     console.log(req.body)
@@ -288,13 +318,25 @@ app.post('/login', (req,res,next) => {
         res.status(400).json({error: 'Password is required'})
     }
                 //we'll check password against database instead of comparing a string
-    if(req.body.password == 'password'){
-        res.json({
-            status: 'Success!'
-        })
-    }else{
-        res.status(400).json({error: 'Password submitted does not match our records'})
+    const user = users[_.findIndex(users, {username: req.body.username})]
+    if(!user){
+        res.status(401).json({error: 'User not found'})
     }
+    else if(req.body.password != user.password){
+        res.status(401).json({error: 'Password does not match records'})
+    }else{
+        //success! generate a token
+        const payload = {id: user.id, username: user.username}
+        const token = jwt.sign(payload, jwtOptions.secretOrKey)
+        res.json({success: true, username: user.username, token: token})
+    }  
+})
+
+app.get('/logout',  (req, res) => {
+    res.json({
+        success: true,
+        message: 'Logged out'
+    })
 })
 
 app.get('/games', (req,res,next) => {
@@ -322,9 +364,13 @@ app.get("/games/:id", (req, res, next) => {
     }
 })
 
-
+app.post('/upload'), (req,res,next) => {
+    console.log(req.body)
+}
 //Upload game
-app.post('/upload', (req,res,next) => {
+app.post('/upload/:id',
+     passport.authenticate("jwt", { session: false }),
+    (req,res,next) => {
     console.log(req.body)
     //fields required in form so shouldn't have to check that they're there
     if(!req.body.title){
@@ -332,7 +378,7 @@ app.post('/upload', (req,res,next) => {
     }
     //missing file
     if(!req.body.file){
-        res.status(400).json({error: 'Password is required'})
+        res.status(400).json({error: 'Body is required'})
     }
     //missing description
     if(req.body.thumbnail){

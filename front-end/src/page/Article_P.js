@@ -1,5 +1,8 @@
 import axios         from 'axios';
 import React, { useState, useEffect } from 'react'
+import jwt from 'jsonwebtoken';
+import {Link} from 'react-router-dom';
+
 import { styled }    from '@mui/system';
 import { useParams } from "react-router-dom";
 import Divider       from "@mui/material/Divider"
@@ -27,6 +30,9 @@ const SendButton = styled(Button)(({ theme }) => ({
 
 // using url parameters
 const Article_P = (props) => {
+    const jwtToken = localStorage.getItem("loginToken")
+    const decodedToken = jwt.decode(jwtToken)
+
     const [article, setArticleData]     = useState(null);
     const [commentData, setCommentData] = useState("");
     const [userData, setUserData]       = useState("");

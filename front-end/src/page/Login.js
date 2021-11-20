@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import axios from 'axios'
 import { Link } from 'react-router-dom';
 // import logo from './logo.svg';
@@ -7,6 +7,8 @@ import './Login.css'
 
 const Login = (props) => {
   const [loginMessage, setLoginMessage] = React.useState('');
+  const [response, setResponse] = React.useState('');
+  const [redirect, setRedirect] = React.useState(false);
   const handleSubmit = (event) => {
     event.preventDefault();
     //send data to server
@@ -17,7 +19,7 @@ const Login = (props) => {
     .then(function (response) {
       //give success message
       console.log(response);
-      setLoginMessage(response.data.status);
+      setResponse(response.data);
     })
     .catch(function (error) {
       //give error message
@@ -25,6 +27,15 @@ const Login = (props) => {
       setLoginMessage(error.response.data.error)
     });
   }
+
+  useEffect(() => {
+    if(response.success && response.token){
+      setLoginMessage("Success! You will be redirected shortly.")
+      localStorage.setItem("loginToken", response.token)
+      setRedirect(true)
+      //TODO: redirect to user page
+    }
+  }, [response])
   return (
     <div>
         {/*shows username and password entry in center of page with Material UI*/}
@@ -34,7 +45,7 @@ const Login = (props) => {
                         Login
                     </div>
                     {/* form to post data to back-end when submitted */}
-                        <form action="http://localhost:3000/login" method="POST" onSubmit={handleSubmit}>
+                    <form action="http://localhost:3000/login" method="POST" onSubmit={handleSubmit}>
                             <input type="text" placeholder="Username" name="username" required/>
                             <br/>
                             <input type="password" placeholder="Password" name="password" required/>
@@ -44,6 +55,7 @@ const Login = (props) => {
                     <p>No account yet? Why not? <Link to="/register">Create an account</Link></p>
                     <br/>
                     <p>{loginMessage}</p>
+                    {redirect ? <meta http-equiv="refresh" content={`0; url=/user`} />: null}
             </div>
         </div>
     </div>
