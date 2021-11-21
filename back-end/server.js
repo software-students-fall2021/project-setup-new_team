@@ -11,4 +11,4 @@ const close = () => {
 }
 module.exports = {
   close: close,
-}
+} 
