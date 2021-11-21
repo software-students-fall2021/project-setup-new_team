@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
-
+import React, { useState } from 'react'
 import CssBaseline from '@mui/material/CssBaseline'; 
 import {BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { StyledEngineProvider } from '@mui/material/styles';
@@ -10,8 +8,8 @@ import NavBar from './comp/NavBar';
 import Footer from './comp/Footer';
 
 // pages go here for now!
-import Articles_P from './page/Articles_P';
-import Article_P  from './page/Article_P';
+import ArticlesP from './page/ArticlesP';
+import ArticleP  from './page/ArticleP';
 import CommentsPage from './page/CommentsPage'
 import GamesList from './page/GamesList';
 import GamesPage from './page/GamesPage';
@@ -20,7 +18,10 @@ import Legal from './page/Legal';
 import Login from './page/Login';
 import Registration from './page/Registration';
 import UserPage from'./page/UserPage';
+import UserLanding from './page/UserLanding';
 import Upload from './page/Upload';
+
+import DebugLogin from './page/DebugLogin';
 
 import './App.css';
 
@@ -44,16 +45,18 @@ function App() {
 				<div className = "app-body">
 					<Switch>
 						<Route path="/" exact> <Home b_data = {data}/> </Route>
-						<Route path="/articles" exact> <Articles_P a_data = {data} setArticleData = { setData } /> </Route>
-						<Route path="/articles/:name"> <Article_P a_data = {data} /> </Route>
-						<Route path= "/games"><GamesList/></Route>
-						<Route path= "/game"><GamesPage/></Route>
+						<Route path="/articles" exact> <ArticlesP a_data = {data} setArticleData = { setData } /> </Route>
+						<Route path="/articles/:name"> <ArticleP a_data = {data} /> </Route>
+						<Route path= "/games" exact><GamesList/></Route>
+						<Route path= "/games/:id"><GamesPage/></Route>
 						<Route path= "/comments" component={CommentsPage}></Route>
 						<Route path="/legal" exact><Legal/></Route>
 						<Route path="/login"><Login/></Route>
 						<Route path="/register"><Registration/></Route>
-						<Route path ="/userpage" exact><UserPage/></Route>
+						<Route path="/user" exact> <UserLanding/></Route>
+						<Route path ="/user/:id" exact><UserPage/></Route>
 						<Route path ="/upload" exact><Upload/></Route>
+						<Route path ="/logindebug" exact><DebugLogin/></Route>
 						<Route> {<h1>Error: 404</h1>} </Route>
 					</Switch>
 				</div>

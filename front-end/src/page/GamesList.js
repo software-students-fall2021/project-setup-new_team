@@ -1,16 +1,12 @@
 import React,{ useState, useEffect } from 'react';
 import { styled }    from '@mui/system';
-import { useParams } from "react-router-dom";
-import Rating        from '@mui/material/Rating';
 import Button        from '@mui/material/Button';
 import TextField     from '@mui/material/TextField';
 import axios from 'axios'
-import { Link } from 'react-router-dom'
 
 import SendIcon from '@mui/icons-material/Send';
-import GamePreview from './GamePreview';
+//import GamePreview from './GamePreview';
 
-import Typography from '@mui/material/Typography';
 
 import './Article.css'
 
@@ -40,18 +36,19 @@ const GamesList = (props) => {
         })
     }
 
-    async function getGameList() {
-        const gameTitle = await getQuery("1")
-        console.log(gameTitle.id)
-        const gameTitle2 = await getQuery("2")
-        const gameTitle3 = await getQuery("3")
-        const gameTitle4 = await getQuery("4")
-        const gameTitle5 = await getQuery("5")
-        setFeatureGame([gameTitle, gameTitle2, gameTitle3, gameTitle4, gameTitle5])
-    }
-
+    
+    
     useEffect(() => {
         console.log("Games page")
+        async function getGameList() {
+            const gameTitle = await getQuery("1")
+            console.log(gameTitle.id)
+            const gameTitle2 = await getQuery("2")
+            const gameTitle3 = await getQuery("3")
+            const gameTitle4 = await getQuery("4")
+            const gameTitle5 = await getQuery("5")
+            setFeatureGame([gameTitle, gameTitle2, gameTitle3, gameTitle4, gameTitle5])
+        }
         getGameList()
     }, [])
     
@@ -71,7 +68,8 @@ const GamesList = (props) => {
             </div>
             <div className = "search">
                 <SearchButton variant="contained" 
-                    /* onClick = {sendCommentData(...)} TODO during back-end */
+                    onClick = {() => {console.log(searchData)}}
+                    /* onClick = {sendCommentData(...)} TODO5 */
                     startIcon={<SendIcon />} 
                     sx={{ backgroundColor:"darkred", maxWidth:96}}>
                     Search

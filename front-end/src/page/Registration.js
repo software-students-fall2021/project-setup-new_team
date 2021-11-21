@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useEffect} from 'react'
+import React from 'react'
 import './Registration.css'
 
 
@@ -7,7 +7,7 @@ import './Registration.css'
 
 const Registration = (props) => {
   const [registrationMessage, setRegistrationMessage] = React.useState('');
-
+  const [redirect, setRedirect] = React.useState(false);
   const handleSubmit = (event) => {
     event.preventDefault();
     //send data to server
@@ -20,7 +20,12 @@ const Registration = (props) => {
     .then(function (response) {
       //give success message
       console.log(response);
-      setRegistrationMessage(response.data.status);
+      if(response.data.success){
+        setRegistrationMessage("Success! You will be redirected shortly.")
+        setRedirect(true)
+      }else{
+        setRegistrationMessage(response.data.status);
+      }
     })
     .catch(function (error) {
       //give error message
@@ -48,6 +53,7 @@ const Registration = (props) => {
               <button onClick={handle_register} > Register </button> */}
               <p>{registrationMessage}</p>
               </div>
+              {redirect ? <meta http-equiv="refresh" content={`0; url=/login`} />: null}
         </div>
     </div>
 

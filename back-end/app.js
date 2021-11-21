@@ -1,20 +1,67 @@
 const express = require('express')
 const app = express()
 const path = require('path')
-const fs = require('fs'); // needed for reading debug json data outside of mockarro -DC @ 6:11 PM Nov. 7th, 2021
+const fs = require('fs'); // needed for reading debug json data outside of mockaroo -DC @ 6:11 PM Nov. 7th, 2021
 const multer = require('multer')
 const axios = require('axios')
 require('dotenv').config({silent: true})
 const morgan = require('morgan')
 const cors = require('cors')
+const bcrypt = require('bcrypt')
 
-// json database for articles -DC
+
+const mongoose = require('mongoose')
+const MongoMemoryServer = require('mongodb-memory-server').MongoMemoryServer;
+
+const User = mongoose.model('User', {
+    username: String,
+    email: String,
+    password: String,
+    id: Number
+})
+
+const uri = process.env.MONGODB_URI;
+if(uri){mongoose.connect(uri)}
+else{
+    const startServer = async () => {
+        const mongod = await MongoMemoryServer.create();
+        const uri = mongod.getUri();
+        mongoose.connect(uri);
+    }
+    startServer();
+    const generateUser = async (username, email, password, id) => {
+        
+        const saltRounds = 10;
+        const salt = await bcrypt.genSalt(saltRounds);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        new User({
+            username: username,
+            email: email,
+            password: hashedPassword,
+            id: id
+        }).save()
+    }
+    generateUser('johnsmith1','mail@mail.com', 'password1', 1)
+    generateUser('janedoe1','mail2@mail.com', 'password2', 2)
+}
+
+
+
+const _ = require('lodash')
+const jwt = require('jsonwebtoken')
+const passport = require('passport')
+
+app.use(passport.initialize())
+const {jwtOptions, jwtStrategy} = require('./jwt-config.js')
+passport.use(jwtStrategy)
+
 
 app.use(morgan('dev'))
 app.use(cors()) //enables CORS for _all_ requests 
 
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
+
 
 app.use('/static', express.static('public')) // only need this when we add static files: dead code for now
 
@@ -219,6 +266,25 @@ app.get('/images/:id', (req,res,next)  => {
 })
 
 
+app.get('/logintest', 
+  passport.authenticate("jwt", { session: false }),
+  (req, res) => {
+    console.log(req);
+    res.json({
+       status: 'congrats you are logged in!'
+    })
+  }
+)
+app.post('/logintest',
+    passport.authenticate("jwt", { session: false }),
+    (req, res) => {
+        res.json({
+            status: `message received! (${req.body.message})`
+        })
+    },
+)
+
+
 //return indices of featured articles for home page
 app.get('/top_articles', (req,res,next) => {
     if(process.env.DEBUG){
@@ -244,57 +310,120 @@ app.get('/top_games', (req,res,next) => {
     
 })
 
+
+function getRandomInt(max){
+    return Math.floor(Math.random() * max);
+}
 //get information for registration
-app.post('/register', (req,res,next) => {
+app.post('/register', async (req,res,next) => {
     console.log(req.body)
     //missing username
     if(!req.body.username){
-        res.status(400).json({error: 'Username is required'})
+        res.status(400).json({error: 'Username is required'}).end();
+        return;
     }
     //missing email
     if(!req.body.email){
-        res.status(400).json({error: 'Email is required'})
+        res.status(400).json({error: 'Email is required'}).end();
+        return;
     }
     //missing password
     if(!req.body.password){
-        res.status(400).json({error: 'Password is required'})
+        res.status(400).json({error: 'Password is required'}).end();
+        return;
     }
     //missing password confirmation
     if(!req.body.confirm_password){
-        res.status(400).json({error: '{Password confirmation is required'})
+        res.status(400).json({error: '{Password confirmation is required'}).end();
+        return;
     }
     //passwords do not match
     if(req.body.password != req.body.confirm_password){
-        res.status(400).json({error: 'Passwords do not match'})
+        res.status(400).json({error: 'Passwords do not match'}).end();
+        return;
     }
     if(req.body.password.length < 6){
-        res.status(400).json({error: 'Password must be at least 6 characters'})
+        res.status(400).json({error: 'Password must be at least 6 characters'}).end();
+        return;
     }
-    //link to database goes here
-
+    try{
+        const user = await User.findOne({username: req.body.username}).lean().exec();
+        if(user){
+            res.status(401).json({error: 'User already exists'}).end();
+            return;
+        }
+    }catch(err){
+        res.status(500).json({error: 'Server error'}).end();
+    }
+    //bcrypt password here
+    const saltRounds = 10;
+    const salt = await bcrypt.genSalt(saltRounds);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    //create new user
+    const newUser = new User({
+        username: req.body.username,
+        email: req.body.email,
+        password: hashedPassword,
+        id: getRandomInt(10000000000), 
+    })
+    try{
+        newUser.save()
+        .then(() => {console.log('new user created' + newUser)})
+    }catch(err){
+        console.log('couldnt save user')
+    }
     res.json({
+        success: true,
         status: 'Success!'
     })
 })
 
-app.post('/login', (req,res,next) => {
+
+
+ app.post('/login', async (req,res,next) => {
     console.log(req.body)
     //missing username
     if(!req.body.username){
-        res.status(400).json({error: 'Username is required'})
+        res.status(400).json({error: 'Username is required'}).end();
+        return;
     }
     //missing password
     if(!req.body.password){
-        res.status(400).json({error: 'Password is required'})
+        res.status(400).json({error: 'Password is required'}).end();
+        return;
     }
-                //we'll check password against database instead of comparing a string
-    if(req.body.password == 'password'){
-        res.json({
-            status: 'Success!'
-        })
-    }else{
-        res.status(400).json({error: 'Password submitted does not match our records'})
+
+    try{
+        const user = await User.findOne({username: req.body.username}).lean().exec();
+        if(!user){
+            res.status(401).json({error: 'User not found'}).end();
+            return;
+        }
+        else {
+            bcrypt.compare(req.body.password, user.password, function(err, response) {
+                if(response){
+                    //success! generate a token
+                    const payload = {id: user.id, username: user.username}
+                    const token = jwt.sign(payload, jwtOptions.secretOrKey)
+                    res.json({success: true, username: user.username, token: token})
+                }else{
+                    res.status(401).json({error: 'Password does not match records'}).end();
+                    return;
+                }
+            })
+
+        }
+    }catch(err){
+        res.status(500).json({error: 'Server error'}).end();
     }
+     
+})
+
+app.get('/logout',  (req, res) => {
+    res.json({
+        success: true,
+        message: 'Ok'
+    })
 })
 
 app.get('/games', (req,res,next) => {
@@ -322,9 +451,13 @@ app.get("/games/:id", (req, res, next) => {
     }
 })
 
-
+app.post('/upload'), (req,res,next) => {
+    console.log(req.body)
+}
 //Upload game
-app.post('/upload', (req,res,next) => {
+app.post('/upload/:id',
+     passport.authenticate("jwt", { session: false }),
+    (req,res,next) => {
     console.log(req.body)
     //fields required in form so shouldn't have to check that they're there
     if(!req.body.title){
@@ -332,7 +465,7 @@ app.post('/upload', (req,res,next) => {
     }
     //missing file
     if(!req.body.file){
-        res.status(400).json({error: 'Password is required'})
+        res.status(400).json({error: 'Body is required'})
     }
     //missing description
     if(req.body.thumbnail){

@@ -1,7 +1,6 @@
 //Keeping this page empty for now, really dependant on backend
 //Simple design, will fill in when we do backend
-import React, {useEffect} from "react";
-import axios from "axios";
+import React from "react";
 import './Upload.css'
 
 
