@@ -1,30 +1,24 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 
-import Typography from '@mui/material/Typography';
 
 import './Article.css'
-import GamePreview from './GamePreview';
-import CommentPreview from './CommentPreview';
-import { Link } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
 const GamesPage = (props) => 
 {
 	const [data, setData] = useState([])
-
+	const id = useParams().id;
   	useEffect(() => {
-	//my api wasn't working properly so I'm just using the professors API to fill in the information for the pagr
-    axios('https://my.api.mockaroo.com/animals.json?num=1&key=d9ddfc40')
-      .then((response) => {
-        setData(response.data)
-      })
-      .catch((err) => {
-        console.log(`Sorry, buster.  No more requests allowed today!`)
-        console.error(err)
-      })
-  }, [props.id])
+		axios.get(`http://localhost:3000/games/${id}`)
+		.then((response) => {
+			setData(response.data)
+		})
+		.catch((err) => {
+			console.error(err)
+		})
+  	}, [id])
 
-  
 
 	return (
 		<div>

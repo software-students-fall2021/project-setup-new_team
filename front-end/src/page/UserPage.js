@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import jwt from 'jsonwebtoken';
 
 //import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Link	from '@mui/material/Link';
@@ -16,14 +18,17 @@ const clip_title = (data) => {
 }
 
 const UserPage = (props) => {
+    const jwtToken = localStorage.getItem("loginToken")
+
+    const user = useParams();
     const[openPop, setOpenPop] = useState(false);
+    const [showUpload, setShowUpload] = useState(false);
     const [uploadMessage, setUploadMessage] = React.useState('');
     const[userGames, setUserGames] = React.useState([]);
 
     //For making popup work
     const togglePopup = () => {
         setOpenPop(!openPop);
-    
     }
 
     function getQuery(args){
@@ -34,26 +39,34 @@ const UserPage = (props) => {
           })
     }
 
-    async function getPageData(){
-        const gamelist = await getQuery(`user_games/${'userid'}`);
-        const game1 = await getQuery(`games_data/${gamelist.id1}`);
-        const game2 = await getQuery(`games_data/${gamelist.id2}`);
-        setUserGames([game1, game2])
-    }
+   
     useEffect(() => {
+        const decodedToken = jwt.decode(jwtToken)
+        async function getPageData(){
+            const gamelist = await getQuery(`user_games/${user.id}`);
+            const game1 = await getQuery(`games_data/${gamelist.id1}`);
+            const game2 = await getQuery(`games_data/${gamelist.id2}`);
+            setUserGames([game1, game2])
+        }
         console.log("getting page data")
         getPageData()
-    }, [])
+         // eslint-disable-next-line
+        if(decodedToken && user.id == decodedToken.id){//yes it's supposed to be comparing equality WITH casting
+            setShowUpload(true)
+        }
+    }, [jwtToken, user.id])
 
     const handleSubmit = (event) => {
         event.preventDefault();
         //send data to server
-        axios.post('http://localhost:3000/upload', {
-          title: event.target.title.value,
-          file: event.target.file.value,
-          description: event.target.description.value,
-          imageid: event.target.imageid.value
+        axios.post(`http://localhost:3000/upload/${user.id}`, {
+            title: event.target.title.value,
+            file: event.target.files.value,
+            description: event.target.description.value,
+            thumbnail: event.target.thumbnail.value
           //unique ID
+        }, {
+            headers: { Authorization: `JWT ${jwtToken}` },
         })
         .then(function (response) {
           //give success message
@@ -73,7 +86,7 @@ const UserPage = (props) => {
                 <div className="profilePic">
                     <AccountCircleIcon/>
                 </div>
-                <h1>Username</h1>
+                <h1>Username</h1> {/* TODO: get username from server -A*/}
 
                 {/*Wrapper for person's games*/}
                 <section className="yourGames">
@@ -109,14 +122,9 @@ const UserPage = (props) => {
 
                     <br />
 
-                    <p>
+                    <div>
                         {/*New game button*/}
-                        <div>
-                        <input
-                            type="button"
-                            value="New Game"
-                            onClick={togglePopup}
-                            />
+                        {showUpload && <input type="button"  value="New Game"  onClick={togglePopup} />}
                             
                             {openPop && <Upload
                             content={<>
@@ -126,7 +134,7 @@ const UserPage = (props) => {
                                     <br/>
                                     <label>
                                         Select game files:
-                                        <input type="file" placeholder="File" name="file" required/>
+                                        <input type="file" placeholder="File" name="files" required multiple/>
                                     </label>
                                     <input type="text" placeholder="Description" name="description" required/>
                                     <br/>
@@ -137,12 +145,13 @@ const UserPage = (props) => {
                                     </label>
                                     {/* unique ID */}
                                     <input type="submit" value="Upload" className="upload-button"/>
+
+                                    <p>{uploadMessage}</p>
                                 </form> 
                             </>}
                             handleClose={togglePopup}
                             />}
-                        </div>
-                    </p>
+                    </div>
                 </section>
             </div>
         </div>

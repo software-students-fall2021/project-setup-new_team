@@ -3,11 +3,13 @@ import React from 'react';
 import { Link }     from 'react-router-dom';
 import Menu         from '@mui/material/Menu';
 import MenuItem     from '@mui/material/MenuItem';
-import { MusicNote } from '@mui/icons-material';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 
 /* i've chosen to pass the callbacks down a level instead of reimporting everything -DC*/
+const refreshPage = () => {
+    localStorage.removeItem("loginToken");
+    window.location.reload(false);
+}
 const IconMenu = ({ anchor, onClose, open}) => {
     return (
         <Menu
@@ -20,9 +22,10 @@ const IconMenu = ({ anchor, onClose, open}) => {
             }}
         >
             {/* this is where we'll assign links to each of the buttons */}
-            <Link to="/userpage"><MenuItem onClick={onClose}>UserPage</MenuItem> </Link>
-            <MenuItem onClick={onClose}>Logout</MenuItem>
-            <Link to="/login"><MenuItem onClick={onClose}> Login </MenuItem></Link>
+            
+            <Link to="/user"><MenuItem onClick={onClose}>Profile</MenuItem></Link>
+            <Link to="/user"><MenuItem onClick={onClose}> Login </MenuItem></Link>
+            <MenuItem onClick={() => {refreshPage(); onClose();}}> Logout </MenuItem>
             <Link to="/register"><MenuItem onClick={onClose}> Register </MenuItem></Link>
         </Menu>
     );
