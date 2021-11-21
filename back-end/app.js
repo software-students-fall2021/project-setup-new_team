@@ -11,8 +11,7 @@ const bcrypt = require('bcrypt')
 
 
 const mongoose = require('mongoose')
-const Mockgoose = require('mockgoose').Mockgoose;
-const mockgoose = new Mockgoose(mongoose);
+const MongoMemoryServer = require('mongodb-memory-server').MongoMemoryServer;
 
 const User = mongoose.model('User', {
     username: String,
@@ -24,15 +23,12 @@ const User = mongoose.model('User', {
 const uri = process.env.MONGODB_URI;
 if(uri){mongoose.connect(uri)}
 else{
-    mockgoose.prepareStorage().then(() => {
-        mongoose.connect('mongodb://localhost/test', function(err){
-            if(err){console.log(err)}
-            else{console.log('mockgoose connected')}
-        });
-    });
-
-    //setup data for unit testing
-    /* NOTE: if your function requires login verification, you'd prob need to update jwt-config too */
+    const startServer = async () => {
+        const mongod = await MongoMemoryServer.create();
+        const uri = mongod.getUri();
+        mongoose.connect(uri);
+    }
+    startServer();
     const generateUser = async (username, email, password, id) => {
         
         const saltRounds = 10;

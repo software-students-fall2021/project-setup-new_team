@@ -27,6 +27,7 @@
     "lodash": "^4.17.21",
     "mock-mongoose": "^8.0.1-a",
     "mockgoose": "^8.0.4",
+    "mongodb-memory-server": "^8.0.2",
     "mongoose": "^6.0.13",
     "nodemon": "^2.0.14",
     "nyc": "^15.1.0",

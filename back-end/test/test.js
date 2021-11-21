@@ -161,7 +161,7 @@ describe('Home Page', function() {
 })
 setTimeout(function() {
     process.exit();
-}, 20000);
+}, 10000);
 /*
 deprecated functions: update tests
 describe('Article', function() {
