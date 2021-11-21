@@ -46,8 +46,8 @@ function App() {
 						<Route path="/" exact> <Home b_data = {data}/> </Route>
 						<Route path="/articles" exact> <Articles_P a_data = {data} setArticleData = { setData } /> </Route>
 						<Route path="/articles/:name"> <Article_P a_data = {data} /> </Route>
-						<Route path= "/games" component={GamesList}></Route>
-						<Route path= "/game" component={GamesPage}></Route>
+						<Route path= "/games"><GamesList/></Route>
+						<Route path= "/game"><GamesPage/></Route>
 						<Route path= "/comments" component={CommentsPage}></Route>
 						<Route path="/legal" exact><Legal/></Route>
 						<Route path="/login"><Login/></Route>
