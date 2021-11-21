@@ -9,6 +9,8 @@ import Button from '@mui/material/Button';
 import { styled } from '@mui/system';
 import SendIcon from '@mui/icons-material/Send';
 
+
+
 import './Article.css'
 
 const UploadButton = styled(Button)(({ theme }) => ({
@@ -26,18 +28,19 @@ const ArticlesP = (props) =>
 	const [file, setFile] = useState();
 	const [isFileReal, setFileIsReal] = useState(false);
 
+	const [articleData, setArticleData] = useState(null);
 	useEffect(() => {
 		// "fetch" from mockaroo
 		axios('http://localhost:3000/articles') // server is on port 3000, we are on port 3001. cant use .
 			.then((response) => {
-				props.setArticleData(response.data)
+				setArticleData(response.data)
 		})
 		.catch((err) => 
 		{
 			// at this point it should never fail!
 			console.error(err)
 		})
-	}, [props])
+	}, [])
 
 	return (
 		<div className = "column">
@@ -89,7 +92,7 @@ const ArticlesP = (props) =>
 			</>
 			</div>
 		<div className = "article-body">
-			<ArticlesList a_data = {props.a_data} />
+			{articleData ? <ArticlesList a_data = {articleData} /> : null} {/* wait for article data before rendering */}
 		</ div>
 		</div>
 	);

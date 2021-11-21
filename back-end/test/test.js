@@ -83,7 +83,7 @@ describe('Register', function() {
 
 describe ('Login', function() {
     describe('#login', function() {
-        it('should return error when no username given', async function() {
+        it('should return error when no username given', function() {
             request(app).post('/login').send({
                     password: 'password'
                 }).end(function(err, res) {
@@ -92,7 +92,7 @@ describe ('Login', function() {
                 }
             );
         })
-        it('should return error when no password given', async function() {
+        it('should return error when no password given', function() {
             request(app).post('/login').send({
                     username: 'username'
                 }).end(function(err, res) {
@@ -101,7 +101,7 @@ describe ('Login', function() {
                 }
             );
         })  
-        it('should return 401 error if user does not exist', async function() {
+        it('should return 401 error if user does not exist', function() {
             request(app).post('/login').send({
                     username: 'i do not exist',
                     password: 'password'
@@ -111,7 +111,7 @@ describe ('Login', function() {
                 }
             );
         })
-        it('should return error if password does not match records', async function() {
+        it('should return error if password does not match records',  function() {
             request(app).post('/login').send({
                     username: 'janedoe1',
                     password: 'password'
@@ -121,7 +121,7 @@ describe ('Login', function() {
                 }
             );
         })
-        it('should return success otherwise', async function() {
+        it('should return success otherwise', function() {
             request(app).post('/login').send({
                     username: 'janedoe1',
                     password: 'password2'
@@ -131,7 +131,7 @@ describe ('Login', function() {
                 }
             );
         })
-        it('should return success when logging out', async function() {
+        it('should return success when logging out', function() {
             request(app).get('/logout').send().end(function(err, res) {
                 assert.equal(res.status, 200);
                 assert.equal(res.body.message, 'Ok');
@@ -154,11 +154,14 @@ describe('Home Page', function() {
             request(app).get('/static/top_articles.json').end(function(err, res) {
                 assert(res.body.id1);
                 assert(res.body.id2);
-                //articles are not guaranteed to be integers
+                //articles are not guaranteed to be integers: this is intended
             });
         })
     })
 })
+setTimeout(function() {
+    process.exit();
+}, 20000);
 /*
 deprecated functions: update tests
 describe('Article', function() {

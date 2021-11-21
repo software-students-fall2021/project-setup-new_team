@@ -10,4 +10,5 @@ const users = [
         id: 2
     }
 ]
-  module.exports = users
+//this is just for testing purposes-it's not actually going to store real user data
+module.exports = users

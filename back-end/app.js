@@ -1,18 +1,61 @@
 const express = require('express')
 const app = express()
 const path = require('path')
-const fs = require('fs'); // needed for reading debug json data outside of mockarro -DC @ 6:11 PM Nov. 7th, 2021
+const fs = require('fs'); // needed for reading debug json data outside of mockaroo -DC @ 6:11 PM Nov. 7th, 2021
 const multer = require('multer')
 const axios = require('axios')
 require('dotenv').config({silent: true})
 const morgan = require('morgan')
 const cors = require('cors')
+const bcrypt = require('bcrypt')
+
+
+const mongoose = require('mongoose')
+const Mockgoose = require('mockgoose').Mockgoose;
+const mockgoose = new Mockgoose(mongoose);
+
+const User = mongoose.model('User', {
+    username: String,
+    email: String,
+    password: String,
+    id: Number
+})
+
+const uri = process.env.MONGODB_URI;
+if(uri){mongoose.connect(uri)}
+else{
+    mockgoose.prepareStorage().then(() => {
+        mongoose.connect('mongodb://localhost/test', function(err){
+            if(err){console.log(err)}
+            else{console.log('mockgoose connected')}
+        });
+    });
+
+    //setup data for unit testing
+    /* NOTE: if your function requires login verification, you'd prob need to update jwt-config too */
+    const generateUser = async (username, email, password, id) => {
+        
+        const saltRounds = 10;
+        const salt = await bcrypt.genSalt(saltRounds);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        new User({
+            username: username,
+            email: email,
+            password: hashedPassword,
+            id: id
+        }).save()
+    }
+    generateUser('johnsmith1','mail@mail.com', 'password1', 1)
+    generateUser('janedoe1','mail2@mail.com', 'password2', 2)
+}
+
+
+
 const _ = require('lodash')
 const jwt = require('jsonwebtoken')
 const passport = require('passport')
 
 app.use(passport.initialize())
-const users = require("./user_data.js") //TODO: replace with database -AP
 const {jwtOptions, jwtStrategy} = require('./jwt-config.js')
 passport.use(jwtStrategy)
 
@@ -271,8 +314,12 @@ app.get('/top_games', (req,res,next) => {
     
 })
 
+
+function getRandomInt(max){
+    return Math.floor(Math.random() * max);
+}
 //get information for registration
-app.post('/register', (req,res,next) => {
+app.post('/register', async (req,res,next) => {
     console.log(req.body)
     //missing username
     if(!req.body.username){
@@ -303,8 +350,32 @@ app.post('/register', (req,res,next) => {
         res.status(400).json({error: 'Password must be at least 6 characters'}).end();
         return;
     }
-    //link to database goes here
-
+    try{
+        const user = await User.findOne({username: req.body.username}).lean().exec();
+        if(user){
+            res.status(401).json({error: 'User already exists'}).end();
+            return;
+        }
+    }catch(err){
+        res.status(500).json({error: 'Server error'}).end();
+    }
+    //bcrypt password here
+    const saltRounds = 10;
+    const salt = await bcrypt.genSalt(saltRounds);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    //create new user
+    const newUser = new User({
+        username: req.body.username,
+        email: req.body.email,
+        password: hashedPassword,
+        id: getRandomInt(10000000000), 
+    })
+    try{
+        newUser.save()
+        .then(() => {console.log('new user created' + newUser)})
+    }catch(err){
+        console.log('couldnt save user')
+    }
     res.json({
         success: true,
         status: 'Success!'
@@ -313,7 +384,7 @@ app.post('/register', (req,res,next) => {
 
 
 
-app.post('/login', (req,res,next) => {
+ app.post('/login', async (req,res,next) => {
     console.log(req.body)
     //missing username
     if(!req.body.username){
@@ -325,21 +396,31 @@ app.post('/login', (req,res,next) => {
         res.status(400).json({error: 'Password is required'}).end();
         return;
     }
-                //we'll check password against database instead of comparing a string
-    const user = users[_.findIndex(users, {username: req.body.username})]
-    if(!user){
-        res.status(401).json({error: 'User not found'}).end();
-        return;
+
+    try{
+        const user = await User.findOne({username: req.body.username}).lean().exec();
+        if(!user){
+            res.status(401).json({error: 'User not found'}).end();
+            return;
+        }
+        else {
+            bcrypt.compare(req.body.password, user.password, function(err, response) {
+                if(response){
+                    //success! generate a token
+                    const payload = {id: user.id, username: user.username}
+                    const token = jwt.sign(payload, jwtOptions.secretOrKey)
+                    res.json({success: true, username: user.username, token: token})
+                }else{
+                    res.status(401).json({error: 'Password does not match records'}).end();
+                    return;
+                }
+            })
+
+        }
+    }catch(err){
+        res.status(500).json({error: 'Server error'}).end();
     }
-    else if(req.body.password != user.password){
-        res.status(401).json({error: 'Password does not match records'}).end();
-        return;
-    }else{
-        //success! generate a token
-        const payload = {id: user.id, username: user.username}
-        const token = jwt.sign(payload, jwtOptions.secretOrKey)
-        res.json({success: true, username: user.username, token: token})
-    }  
+     
 })
 
 app.get('/logout',  (req, res) => {

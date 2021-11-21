@@ -19,7 +19,6 @@ const clip_title = (data) => {
 
 const UserPage = (props) => {
     const jwtToken = localStorage.getItem("loginToken")
-    const decodedToken = jwt.decode(jwtToken)
 
     const user = useParams();
     const[openPop, setOpenPop] = useState(false);
@@ -42,6 +41,7 @@ const UserPage = (props) => {
 
    
     useEffect(() => {
+        const decodedToken = jwt.decode(jwtToken)
         async function getPageData(){
             const gamelist = await getQuery(`user_games/${user.id}`);
             const game1 = await getQuery(`games_data/${gamelist.id1}`);
@@ -54,7 +54,7 @@ const UserPage = (props) => {
         if(decodedToken && user.id == decodedToken.id){//yes it's supposed to be comparing equality WITH casting
             setShowUpload(true)
         }
-    }, [decodedToken, user])
+    }, [jwtToken, user.id])
 
     const handleSubmit = (event) => {
         event.preventDefault();
