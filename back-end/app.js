@@ -566,6 +566,8 @@ app.get("/games/:id", (req, res, next) => {
 app.post('/upload'), (req,res,next) => {
     console.log(req.body)
 }
+
+
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
       // store files into a directory named 'uploads'
@@ -573,32 +575,63 @@ var storage = multer.diskStorage({
     },
     filename: function (req, file, cb) {
       // rename the files to include the current time and date
-      cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname))
+      cb(null, file.fieldname + path.extname(file.originalname))
     },
   })
+
 var upload = multer({ storage: storage })
 
 const game_upload = upload.fields([{name: 'thumbnail', maxCount: 1}, {name: 'game_files', maxCount: 10}])
+
+
 //Upload game
-app.post('/upload/:id',
+app.post('/upload/:userid',
      passport.authenticate("jwt", { session: false }),
      game_upload,
-    (req,res,next) => {
-    console.log(req.body)
-    //fields required in form so shouldn't have to check that they're there
-    if(!req.body.title){
-        res.status(400).json({error: 'Username is required'}).end()
-        return
-    }
-    //missing description
-    if(req.body.thumbnail){
-        res.json({
-            status: 'Success!'
-        })
-    }else{
-        res.status(400).json({error: 'Unable to upload'}).end()
-        return
-    }
+    async (req,res,next) => {
+
+        const id   = req.body.id;
+        const title = req.body.title;
+        const description = req.body.description;
+        const userid = req.body.userid;
+        const thumb = req.body.thumbnail;
+        const path = req.body.game_files;
+
+        if(!id || !title || !description || !thumb)
+        {
+            console.log(`${id} ${title} ${description} ${thumb}`);
+
+            res.json({
+                success: false,
+                error: "game failed to upload."
+            })
+        }
+        else
+        {
+            console.log("successful upload here");
+
+            const new_game = new gameScheme({
+                id                  : id,
+                title               : title,
+                description         : description,
+                userid              : userid,
+                thumb               : thumb,
+                path                : path
+            });
+
+            // notify mongoose to save changes
+            new_game.save( (err,res) => {
+                if(err)
+                    console.log(err);
+                else
+                    console.log(res);
+            });
+
+            res.json({
+                success: true
+            });
+        }
+
 })
 
 //return id's of users games
