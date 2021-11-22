@@ -59,14 +59,17 @@ const UserPage = (props) => {
     const handleSubmit = (event) => {
         event.preventDefault();
         //send data to server
-        axios.post(`http://localhost:3000/upload/${user.id}`, {
-            title: event.target.title.value,
-            file: event.target.files.value,
-            description: event.target.description.value,
-            thumbnail: event.target.thumbnail.value
-          //unique ID
-        }, {
-            headers: { Authorization: `JWT ${jwtToken}` },
+        const bodyFormData = new FormData();
+        bodyFormData.set('title', event.target.title.value);
+        bodyFormData.set('description', event.target.description.value);
+        bodyFormData.set('thumbnail', event.target.thumbnail.files[0]);
+        //append all game_files to bodyFormData
+        for(let i = 0; i < event.target.game_files.files.length; i++){
+            bodyFormData.append('game_files', event.target.game_files.files[i]);
+        }
+        axios.post(`http://localhost:3000/upload/${user.id}`, bodyFormData, {
+            headers: { Authorization: `JWT ${jwtToken}`,
+                        'Content-Type': 'multipart/form-data'}, //need to change the request args
         })
         .then(function (response) {
           //give success message
@@ -76,7 +79,7 @@ const UserPage = (props) => {
         .catch(function (error) {
           //give error message
           console.log(error);
-          setUploadMessage(error.response.data.error);
+          setUploadMessage(error.response.data.status);
         });
     }
     if(userGames.length < 2){return <div>Loading...</div>}
@@ -128,13 +131,13 @@ const UserPage = (props) => {
                             
                             {openPop && <Upload
                             content={<>
-                                <form action="http://localhost:3000/upload" method="POST" onSubmit={handleSubmit}>
+                                <form action="http://localhost:3000/upload" method="POST" onSubmit={handleSubmit} encType="multipart/form-data">
                                     <input type="text" placeholder="Title" name="title" required/>
                                     <br/>
                                     <br/>
                                     <label>
                                         Select game files:
-                                        <input type="file" placeholder="File" name="files" required multiple/>
+                                        <input type="file" placeholder="File" name="game_files" webkitdirectory="true"/>
                                     </label>
                                     <input type="text" placeholder="Description" name="description" required/>
                                     <br/>
@@ -148,6 +151,7 @@ const UserPage = (props) => {
 
                                     <p>{uploadMessage}</p>
                                 </form> 
+                                
                             </>}
                             handleClose={togglePopup}
                             />}
