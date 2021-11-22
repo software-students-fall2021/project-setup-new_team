@@ -19,8 +19,19 @@ const User = mongoose.model('User', {
     id: Number
 })
 
+
 const Article = require('./article.model.js');
 const Comment = require('./comment.model.js');
+
+const gameScheme = mongoose.model('Game', {
+    id: Number,
+    title: String,
+    description: String,
+    userid: Number,
+    thumb: String,
+    path: String
+})
+
 
 const uri = process.env.MONGODB_URI;
 if(uri){mongoose.connect(uri)}
@@ -519,13 +530,21 @@ app.get('/logout',  (req, res) => {
     })
 })
 
-app.get('/games', (req,res,next) => {
-    if(process.env.DEBUG){
-        res.json({id1: 1, id2: 2})
-    }else{
-        axios.get(`https://my.api.mockaroo.com/game_test_two.json?key=77851f20`) //list of games
-        .then(response => res.json(response.data))
-        .catch(err => next(err))
+app.get('/games', async (req,res,next) => {
+    // if(process.env.DEBUG){
+    //     res.json({id1: 1, id2: 2})
+    // }else{
+    //     axios.get(`https://my.api.mockaroo.com/game_test_two.json?key=77851f20`) //list of games
+    //     .then(response => res.json(response.data))
+    //     .catch(err => next(err))
+    // }
+    try {
+        const games = await gameScheme.find({}).lean().exec()
+        return res.render('/games', {
+            games,
+        })
+    } catch(err) {
+        return next(err)
     }
 })
 
@@ -583,14 +602,26 @@ app.get('/user_games/:userid', (req,res,next) => {
     
 })
 
-app.post("/games_search", (req, res, next) => {
+app.post("/games_search", async (req, res, next) => {
     console.log(req.body)
     if(!req.body.id) {
         res.status(400).json({error: 'without an ID you cant get a game!' })
     }
     else {
         //compare id with database when available
-        console.log("game info")
+        try {
+            const game = await gameScheme.findOne({id: req.body.id}).lean().exec();
+            if(!game) {
+                res.status(400).json({error: "Game doesnt exist"}).end();
+            }
+            else{
+                return res.render('search/game', {
+                    game,
+                })
+            }
+        } catch(err) {
+            res.status(500).json({error: "Server error"}).end();
+        }
     }
     res.json({status: "Return game info here"})
 })
