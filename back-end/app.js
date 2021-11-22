@@ -135,7 +135,7 @@ app.get('/articles_data/:id', (req,res,next) => {
 app.get('/articles/debug/:name', async (req, res, next) => {
     const name = req.params.name;
 
-    const doc = await Article.findOne({ title: name });
+    const doc = await Article.findOne({ article_name: name });
 
     if(doc != null)
     {
@@ -155,12 +155,12 @@ app.get('/articles/debug/:name', async (req, res, next) => {
 // when a user requests to upload an article
 app.post('/articles/upload', async (req, res, next) => {
 
-    const article_name = req.body.article_name;
+    const name = req.body.article_name;
 
     // replace this with a find operation via mongoose & mongoDB.
     // -DC @ 4:06 AM Nov. 21st, 2021
     // const articleObj = staticArticleData.find(article => article.article_name == article_name);
-    const articleobj = await Article.findOne({ title: article_name });
+    const articleobj = await Article.findOne({ article_name : name });
 
     if(articleobj == null)
     {
@@ -195,12 +195,12 @@ app.post('/articles/upload', async (req, res, next) => {
             // }));
 
             const new_article = new Article({
-                title     : article_name,
-                author    : author,
-                body      : text,
-                rating    : rating,
-                image_url : imgurl,
-                comments  : []
+                article_name      : name,
+                poster_name       : author,
+                article_text      : text,
+                rating            : rating,
+                image_url         : imgurl,
+                comments          : []
             });
 
             // notify mongoose to save changes
@@ -234,11 +234,11 @@ app.post('/articles/:name/comment', async (req, res, next) => {
     // EDIT: I think its best we keep the anonymous nature of comments in constrast
     // with the requirement to have an account in order to post an article -DC
 
-    const name     = req.params.name;
+    const name = req.params.name;
 
     // replace with a mongodb find
     //let articleObj = staticArticleData.find(article => article.article_name == name);
-    let articleObj = await Article.findOne({title: name});
+    let articleObj = await Article.findOne({article_name: name});
 
     if(!articleObj)
     {
@@ -288,9 +288,9 @@ app.get('/articles', async (req, res, next) => {
     const all_docs = await Article.find({});
 
     res.json(all_docs.map((article) => ({
-        article_name  : article.title,
-        article_text  : article.body.substring(0, 100),
-        article_poster: article.author,
+        article_name  : article.article_name,
+        article_text  : article.article_text.substring(0, 100),
+        article_poster: article.poster_name,
     })));
 
     // res.json(staticArticleData.map((article) => 
@@ -312,7 +312,7 @@ app.get('/articles/:name', async (req, res, next) => {
     const name = req.params.name;
     
     //const articleObj = staticArticleData.find(article => article.article_name === name);
-    articleObj = await Article.findOne({ title: name });
+    articleObj = await Article.findOne({ article_name: name });
 
     if(!articleObj) // null
     {

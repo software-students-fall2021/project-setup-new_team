@@ -5,13 +5,13 @@ const mongoose = require('mongoose');
 //const { Schema } = mongoose;
 
 const Article = mongoose.model('Article', {
-	title     : String,
-	author    : String,
-	body      : String,
-	image_url : String,
-	date	  : { type: Date, default: Date.now },
-	comments  : [{ comment: String, username: String, rating: Number }],
-	rating	  : Number,
+	/*title*/  article_name    : String,
+	/*author*/ poster_name     : String,
+	/*body*/   article_text    : String,
+			   image_url 	   : String,
+			   date	  		   : { type: Date, default: Date.now },
+			   comments  	   : [{ comment: String, username: String, rating: Number }],
+			   rating	       : Number,
 });
 
 module.exports = Article;
