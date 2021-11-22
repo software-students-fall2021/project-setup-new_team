@@ -566,18 +566,29 @@ app.get("/games/:id", (req, res, next) => {
 app.post('/upload'), (req,res,next) => {
     console.log(req.body)
 }
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      // store files into a directory named 'uploads'
+      cb(null, "./Games")
+    },
+    filename: function (req, file, cb) {
+      // rename the files to include the current time and date
+      cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname))
+    },
+  })
+var upload = multer({ storage: storage })
+
+const game_upload = upload.fields([{name: 'thumbnail', maxCount: 1}, {name: 'game_files', maxCount: 10}])
 //Upload game
 app.post('/upload/:id',
      passport.authenticate("jwt", { session: false }),
+     game_upload,
     (req,res,next) => {
     console.log(req.body)
     //fields required in form so shouldn't have to check that they're there
     if(!req.body.title){
-        res.status(400).json({error: 'Username is required'})
-    }
-    //missing file
-    if(!req.body.file){
-        res.status(400).json({error: 'Body is required'})
+        res.status(400).json({error: 'Username is required'}).end()
+        return
     }
     //missing description
     if(req.body.thumbnail){
@@ -585,7 +596,8 @@ app.post('/upload/:id',
             status: 'Success!'
         })
     }else{
-        res.status(400).json({error: 'Unable to upload'})
+        res.status(400).json({error: 'Unable to upload'}).end()
+        return
     }
 })
 
