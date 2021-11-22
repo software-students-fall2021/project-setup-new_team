@@ -9,7 +9,6 @@ const morgan = require('morgan')
 const cors = require('cors')
 const bcrypt = require('bcrypt')
 
-
 const mongoose = require('mongoose')
 const MongoMemoryServer = require('mongodb-memory-server').MongoMemoryServer;
 
@@ -20,6 +19,10 @@ const User = mongoose.model('User', {
     id: Number
 })
 
+
+const Article = require('./article.model.js');
+const Comment = require('./comment.model.js');
+
 const gameScheme = mongoose.model('Game', {
     id: Number,
     title: String,
@@ -28,6 +31,7 @@ const gameScheme = mongoose.model('Game', {
     thumb: String,
     path: String
 })
+
 
 const uri = process.env.MONGODB_URI;
 if(uri){mongoose.connect(uri)}
@@ -93,56 +97,83 @@ app.get('/articles_data/:id', (req,res,next) => {
 })
 
 // Article functionality goes here
-let staticArticleData = {};
+// let staticArticleData = {};
 
 // fetch data from mockaroo on initialization, use this as a dynamic database until
 // mongo is available -DC @ 6:18 PM November 7th, 2021
-;(() => {
-    if(process.env.DEBUG)
+
+// This is deprecated code, I am leaving it here until the next sprint as it may provide
+// use until we've decided its good to go. -DC @ 4:05 AM Nov. 21st, 2021.
+// ;(() => {
+//     if(process.env.DEBUG)
+//     {
+//         console.log("simulating a fetch of some data from mockaroo")
+
+//         // fuck async for now, since we're doing this
+//         // on start time
+//         const debug_mock = fs.readFileSync('./article_schema.json'); 
+//         staticArticleData = JSON.parse(debug_mock).map(article => 
+//         ({
+//             // we need to do this in order to append comments to each article.
+//             article_name: article.article_name,
+//             article_text: article.article_text,
+//             image_url   : article.image_url,
+//             poster_name : article.poster_name,
+//             rating      : article.rating,
+//             comments    : []
+//         }));
+
+//         // article_data.map(article => console.log(article))
+//     }
+//     else
+//     {
+//         console.log("actually fetching data from mockaroo")
+//         axios.get(`https://my.api.mockaroo.com/article_schema.json?key=${process.env.ARTICLE_API_KEY}`) // article mock data
+//             .then(response => staticArticleData = (response.data).map(article => 
+//             ({
+//             // we need to do this in order to append comments to each article.
+//                 article_name: article.article_name,
+//                 article_text: article.article_text,
+//                 image_url   : article.image_url,
+//                 poster_name : article.poster_name,
+//                 rating      : article.rating,
+//                 comments    : []           
+//             })))
+//             .catch(err => console.log(err.stack))
+//     }
+// }) // ()
+
+app.get('/articles/debug/:name', async (req, res, next) => {
+    const name = req.params.name;
+
+    const doc = await Article.findOne({ article_name: name });
+
+    if(doc != null)
     {
-        console.log("simulating a fetch of some data from mockaroo")
-
-        // fuck async for now, since we're doing this
-        // on start time
-        const debug_mock = fs.readFileSync('./article_schema.json'); 
-        staticArticleData = JSON.parse(debug_mock).map(article => 
-        ({
-            // we need to do this in order to append comments to each article.
-            article_name: article.article_name,
-            article_text: article.article_text,
-            image_url   : article.image_url,
-            poster_name : article.poster_name,
-            rating      : article.rating,
-            comments    : []
-        }));
-
-        // article_data.map(article => console.log(article))
+        res.json({
+            success: true,
+            data: doc
+        });
     }
     else
     {
-        console.log("actually fetching data from mockaroo")
-        axios.get(`https://my.api.mockaroo.com/article_schema.json?key=${process.env.ARTICLE_API_KEY}`) // article mock data
-            .then(response => staticArticleData = (response.data).map(article => 
-            ({
-            // we need to do this in order to append comments to each article.
-                article_name: article.article_name,
-                article_text: article.article_text,
-                image_url   : article.image_url,
-                poster_name : article.poster_name,
-                rating      : article.rating,
-                comments    : []           
-            })))
-            .catch(err => console.log(err.stack))
+        res.json({
+            success: false,
+        })
     }
-})()
+});
 
 // when a user requests to upload an article
-app.post('/articles/upload', (req, res, next) => {
+app.post('/articles/upload', async (req, res, next) => {
 
-    const article_name = req.body.article_name;
-    const articleObj = staticArticleData.find(article => article.article_name == article_name);
-    
-    if(!articleObj)
+    const name = req.body.article_name;
+
+    // replace this with a find operation via mongoose & mongoDB.
+    // -DC @ 4:06 AM Nov. 21st, 2021
+    // const articleObj = staticArticleData.find(article => article.article_name == article_name);
+    const articleobj = await Article.findOne({ article_name : name });
+
+    if(articleobj == null)
     {
         const text   = req.body.article_text;
         const author = req.body.poster_name;
@@ -162,41 +193,72 @@ app.post('/articles/upload', (req, res, next) => {
         {
             console.log("successful upload here");
 
-            staticArticleData.push(({
-                // we need to do this in order to append comments to each article.
-                article_name: article_name,
-                article_text: text,
-                image_url   : imgurl,
-                poster_name : author,
-                rating      : rating,
-                comments    : []
-            }));
+            // instead of push, we'll want to append to the articles collection in mongodb
+            // -DC @ 4:07 AM Nov. 21st, 2021.
+            // staticArticleData.push(({
+            //     // we need to do this in order to append comments to each article.
+            //     article_name: article_name,
+            //     article_text: text,
+            //     image_url   : imgurl,
+            //     poster_name : author,
+            //     rating      : rating,
+            //     comments    : []
+            // }));
+
+            const new_article = new Article({
+                article_name      : name,
+                poster_name       : author,
+                article_text      : text,
+                rating            : rating,
+                image_url         : imgurl,
+                comments          : []
+            });
+
+            // notify mongoose to save changes
+            new_article.save( (err,res) => {
+                if(err)
+                    console.log(err);
+                else
+                    console.log(res);
+            });
 
             res.json({
                 success: true
             });
         }
     }
+    else 
+    {
+        res.json({
+            success: false
+        });
+    }
 })
 
-// when a user request to post a comment
-app.post('/articles/:name/comment', (req, res, next) => {
+// when a user requests to post a comment
+app.post('/articles/:name/comment', async (req, res, next) => {
     // with help with express's jsonParser this is very easy :)!
     // I'm going to keep this functionality just like 4chan and other
     // traditional forum spaces that allow for anonymous posting. Post 
     // anything you want and say you are whoever you want to be!
 
-    const name     = req.params.name;
-    let articleObj = staticArticleData.find(article => article.article_name == name);
-    
+    // EDIT: I think its best we keep the anonymous nature of comments in constrast
+    // with the requirement to have an account in order to post an article -DC
+
+    const name = req.params.name;
+
+    // replace with a mongodb find
+    //let articleObj = staticArticleData.find(article => article.article_name == name);
+    let articleObj = await Article.findOne({article_name: name});
+
     if(!articleObj)
     {
         res.json({success: false, error: "how did you even get here!? bad coder detected."});
         return;
     }
 
-    const _username    = req.body.user;
     const _comment     = req.body.comment; 
+    const _username    = req.body.user;
     const _rating      = req.body.rating;
 
     if(!_username || !_comment || !_rating)
@@ -205,42 +267,75 @@ app.post('/articles/:name/comment', (req, res, next) => {
     {
         // some sanity checks here if you want to prevent toxicity:
 
-        // append comment object to our articleObj
-        const comObj = ({
-            username: _username,
-            comment:  _comment,
-            rating:  _rating,
-        }); 
+        // append to the article document associated with the title.
+        const comment = ({
+            comment  : _comment,
+            username : _username,
+            rating   : _rating
+        });
 
-        articleObj.comments.push(comObj);
-        res.json({success:true, comObj});
+        articleObj.comments.push(comment);
+
+        // notify mongoose to save changes
+        articleObj.save( (err,res) => {
+            if(err)
+                console.log(err);
+            else
+                console.log(res);
+        });
 
         // send our comment data back to append to front-end's local copy of 
         // comment
+        res.json({success:true, comment });
     }
 })
 
 
 // get the trimmed article data from the express server to preview all articles -DC @ 6:53 PM Nov. 7th, 2021
-app.get('/articles', (req, res, next) => {      
-    res.json(staticArticleData.map((article) => 
-    ({ 
+app.get('/articles', async (req, res, next) => {      
+    
+    // maybe limit this amount at some later point. For now since articles
+    // aren't going to be posted en masse its good to just go for this
+    const all_docs = await Article.find({});
+
+    res.json(all_docs.map((article) => ({
         article_name  : article.article_name,
         article_text  : article.article_text.substring(0, 100),
         article_poster: article.poster_name,
-    })))
+    })));
+
+    // res.json(staticArticleData.map((article) => 
+    // ({ 
+    //     article_name  : article.article_name,
+    //     article_text  : article.article_text.substring(0, 100),
+    //     article_poster: article.poster_name,
+    // })))
 })
 
 // get the article data from the express server -DC @ 6:53 PM Nov. 7th, 2021
-app.get('/articles/:name', (req, res, next) => {
-    const name       = req.params.name;
-    const articleObj = staticArticleData.find(article => article.article_name === name);
+app.get('/articles/:name', async (req, res, next) => {
+
+    if(!req.params.name) {
+        res.status(400).json({error: 'Text name is required!'}).end();
+        return;
+    }
+
+    const name = req.params.name;
+    
+    //const articleObj = staticArticleData.find(article => article.article_name === name);
+    articleObj = await Article.findOne({ article_name: name });
+
     if(!articleObj) // null
     {
+        // im hesitant to change this error return as it may be vital to front-end display.
+        // -DC @ 4:47PM Nov. 21st, 2021
+
         res.json({
             success: false,
             error: "Error 404: article does not exist!"
         })
+
+        return;
     }
     else 
     {
