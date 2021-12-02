@@ -29,7 +29,7 @@ const gameScheme = mongoose.model('Game', {
     description: String,
     userid: Number,
     thumb: String,
-    path: String
+    path: [{ type: String }]
 })
 
 
@@ -570,12 +570,12 @@ app.post('/upload'), (req,res,next) => {
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      // store files into a directory named 'uploads'
+      // store files into a directory named 'games'
       cb(null, "./Games")
     },
     filename: function (req, file, cb) {
       // rename the files to include the current time and date
-      cb(null, file.fieldname + path.extname(file.originalname))
+      cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
     },
   })
 
@@ -594,12 +594,17 @@ app.post('/upload/:userid',
         const title = req.body.title;
         const description = req.body.description;
         const userid = req.body.userid;
-        const thumb = req.body.thumbnail;
-        const path = req.body.game_files;
+        const thumb = req.files['thumbnail'][0].filename;
+        const thepath = []
+        for(let i = 0; i < req.files['game_files'].length; i++){
+           thepath.push(req.files['game_files'][i].filename);
+        }
 
-        if(!id || !title || !description || !thumb)
+        console.log(`${id} ${title} ${description} ${thumb} ${thepath}`);
+
+        if(!id || !title || !description || !thumb || !thepath)
         {
-            console.log(`${id} ${title} ${description} ${thumb}`);
+            console.log(`${id} ${title} ${description} ${thumb} ${thepath}`);
 
             res.json({
                 success: false,
@@ -616,7 +621,7 @@ app.post('/upload/:userid',
                 description         : description,
                 userid              : userid,
                 thumb               : thumb,
-                path                : path
+                path                : thepath
             });
 
             // notify mongoose to save changes
