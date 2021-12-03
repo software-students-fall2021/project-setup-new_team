@@ -67,7 +67,6 @@ const GamesList = (props) => {
                 setFeatureGame(featureGame => [...featureGame, res.data])
                 })
             })
-            console.log(featureGame[0])
         }   
         getGameList()
     }, [])
@@ -107,7 +106,7 @@ const GamesList = (props) => {
                                 </a>
                             </div>
                             
-                            <img src={`http://localhost:3000/static/images/${featureGame[index].thumb}`} className="home-img-left" />
+                            <img alt="alt text" src={`http://localhost:3000/static/images/${featureGame[index].thumb}`} className="home-img-left" />
                             
                             
                             <p className="home-text-left">

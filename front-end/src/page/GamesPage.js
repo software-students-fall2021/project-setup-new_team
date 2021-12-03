@@ -21,7 +21,7 @@ const GamesPage = (props) =>
 		})
   	}, [id])
 	useEffect(() => {
-		if(data.length == 0){
+		if(data.length === 0){
 			return;
 		}
 		axios.get(`http://localhost:3000/username/${data.userid}`)
@@ -42,7 +42,7 @@ const GamesPage = (props) =>
 			<h1>{data.title}</h1>
 			<section className="game-header">
 				<article key={data.id}>
-				<img src={`http://localhost:3000/static/images/${data.thumb}`}  className="game-img-center"/>
+				<img src={`http://localhost:3000/static/images/${data.thumb}`} alt="alt text" className="game-img-center"/>
 				<div className= "game-description">
 					<p>{data.description}</p>
 					<button className = "button-search">Play</button>
