@@ -1,0 +1,11 @@
+.game-img-left{
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    width: 100px;
+    height: 100px;
+}
+.game-img-center{
+    width: 400px;
+    height: 400px;
+}

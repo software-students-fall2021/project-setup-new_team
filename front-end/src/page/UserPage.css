@@ -7,6 +7,7 @@
     flex-direction: column;
     justify-content: center;
     border: 1px solid black;
+    min-width: 400px;
     max-width: 400px;
     margin: 0 auto;
     padding: 0;
@@ -32,12 +33,18 @@ font-size: 12;
 .textCenter {
     text-align: center;
 }
-.imgCenter{
+.userImageCenter{
     clear: right;
     float: center;
+    width: 200px;
+    height: 200px;
 }
 .profilePic{
     border-radius: 50%;
     width: 400;
     height: 400;
+}
+.userGame{
+    display: 'block';
+    position: 'static'
 }

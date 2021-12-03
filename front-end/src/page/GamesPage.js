@@ -3,34 +3,56 @@ import axios from 'axios'
 
 
 import './Article.css'
+import './GamePage.css'
 import { Link, useParams } from 'react-router-dom'
 
 const GamesPage = (props) => 
 {
 	const [data, setData] = useState([])
+	const [username, setUsername] = useState('')
 	const id = useParams().id;
   	useEffect(() => {
 		axios.get(`http://localhost:3000/games/${id}`)
 		.then((response) => {
-			setData(response.data)
+			setData(response.data.data)
 		})
 		.catch((err) => {
 			console.error(err)
 		})
   	}, [id])
-
-
+	useEffect(() => {
+		if(data.length == 0){
+			return;
+		}
+		axios.get(`http://localhost:3000/username/${data.userid}`)
+		.then((response) => {
+			setUsername(response.data.username)
+			console.log(response.data.username)
+		})
+		.catch((err) => {
+			console.error(err)
+		})
+	}, [data])
+	if(data.length === 0)
+	{
+		return <div>Loading...</div>
+	}
 	return (
 		<div>
 			<h1>{data.title}</h1>
 			<section className="game-header">
 				<article key={data.id}>
+				<img src={`http://localhost:3000/static/images/${data.thumb}`}  className="game-img-center"/>
 				<div className= "game-description">
 					<p>{data.description}</p>
 					<button className = "button-search">Play</button>
 				</div>
 				</article>
 			</section>
+			{username && <h3>A game by {' '}
+			<Link to={`/user/${data.userid}`}>
+				 {username}
+			</Link> </h3>}
 			<Link to={`/comments`}>
 			<h2>Comments</h2>
 			</Link>

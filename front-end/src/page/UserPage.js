@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 
 //import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Link	from '@mui/material/Link';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 import './UserPage.css'
@@ -16,7 +15,9 @@ const clip_title = (data) => {
     }
     return data
 }
-
+const randInt = () =>{
+    return Math.floor(Math.random() * 1e12)
+}
 const UserPage = (props) => {
     const jwtToken = localStorage.getItem("loginToken")
 
@@ -25,7 +26,8 @@ const UserPage = (props) => {
     const [showUpload, setShowUpload] = useState(false);
     const [uploadMessage, setUploadMessage] = React.useState('');
     const[userGames, setUserGames] = React.useState([]);
-
+    const[userName, setUserName] = React.useState('');
+    const[gamePostSuccess, setGamePostSuccess] = React.useState(1);
     //For making popup work
     const togglePopup = () => {
         setOpenPop(!openPop);
@@ -35,18 +37,41 @@ const UserPage = (props) => {
         return new Promise((resolve, reject) => {
               axios.get(`http://localhost:3000/${args}`)
               .then(res => {resolve(res.data)})
-              .catch(err => {console.log(err)})
+              .catch(err => {console.log(err); reject(err)})
           })
     }
-
+    
    
     useEffect(() => {
         const decodedToken = jwt.decode(jwtToken)
         async function getPageData(){
+            setUserGames([]);
+            try{
+                const name = await getQuery(`username/${user.id}`);
+                setUserName(name.username)
+            }catch(err){
+                setUserName("404: User Not Found")
+                return
+            }
             const gamelist = await getQuery(`user_games/${user.id}`);
-            const game1 = await getQuery(`games_data/${gamelist.id1}`);
-            const game2 = await getQuery(`games_data/${gamelist.id2}`);
-            setUserGames([game1, game2])
+            console.log(gamelist)
+            if(!gamelist){
+                return;
+            }
+            //add each game in gameslist to userGames
+            gamelist.map(game => {
+                return {
+                    id: game.id,
+                    title: game.title,
+                    description: game.description,
+                    thumb: game.thumb,
+                    userid: game.userid,
+                    path: game.path
+                }
+            }).forEach(game => {
+                setUserGames(userGames => [...userGames, game])
+            })
+
         }
         console.log("getting page data")
         getPageData()
@@ -54,13 +79,13 @@ const UserPage = (props) => {
         if(decodedToken && user.id == decodedToken.id){//yes it's supposed to be comparing equality WITH casting
             setShowUpload(true)
         }
-    }, [jwtToken, user.id])
+    }, [jwtToken, user.id, gamePostSuccess])
 
     const handleSubmit = (event) => {
         event.preventDefault();
         //send data to server
         const bodyFormData = new FormData();
-        bodyFormData.set('id', Math.random(100))
+        bodyFormData.set('id',randInt())
         bodyFormData.set('title', event.target.title.value);
         bodyFormData.set('description', event.target.description.value);
         bodyFormData.set('thumbnail', event.target.thumbnail.files[0]);
@@ -76,6 +101,8 @@ const UserPage = (props) => {
           //give success message
           console.log(response);
           setUploadMessage(response.data.status);
+          setOpenPop(false)
+          setGamePostSuccess(gamePostSuccess + 1)
         })
         .catch(function (error) {
           //give error message
@@ -83,46 +110,27 @@ const UserPage = (props) => {
           setUploadMessage(error.response.data.status);
         });
     }
-    if(userGames.length < 2){return <div>Loading...</div>}
     return (
         <div className="container">
             <div className="UserPage">
                 <div className="profilePic">
                     <AccountCircleIcon/>
                 </div>
-                <h1>Username</h1> {/* TODO: get username from server -A*/}
-
+                <h1>{userName}</h1> 
+                {!userGames.length && <h2>Try uploading a game!</h2>}
+                {
+                    userGames.map((game,index) => {
+                        return (
+                            <Link to={`/games/${game.id}`}>
+                                <h2>{clip_title(game.title)}</h2>
+                                {<img src={`http://localhost:3000/static/images/${game.thumb}`} alt={game.title} className="userImageCenter"/>}
+                            </Link>
+                        )
+                    })
+                }
                 {/*Wrapper for person's games*/}
-                <section className="yourGames">
-                    <div className="textCenter">
-                        <a href='/game'>
-                        {clip_title(userGames[0].title)}
-                        </a>
-                    </div>
 
-                    {/*body for first game-image*/}
-                    <p>
-                        {/*clickable image*/}
-                        <Link to="/games">
-                            <img alt="uh" src="https://picsum.photos/300" />
-                        </Link>
-                    </p>
-                    <br />
-                    {/*header for second game-right*/}
-                    <div className='textCenter'>
-                        <a href='/games' className='bannerClass fontSizeLarge'>
-                             {clip_title(userGames[1].title)}
-                        </a>
-                    </div>
-
-                    {/*body for second game-image*/}
-                    <p className="textCenter">
-                        {/*clickable image*/}
-                        <Link to="/games">
-                            <img alt="uh" src="https://picsum.photos/300" />
-                        </Link>
-                    </p>
-
+                   
 
                     <br />
 
@@ -157,7 +165,6 @@ const UserPage = (props) => {
                             handleClose={togglePopup}
                             />}
                     </div>
-                </section>
             </div>
         </div>
     )

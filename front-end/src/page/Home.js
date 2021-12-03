@@ -29,23 +29,25 @@ const Home = (props) => {
             .catch(err => {console.log(err)})
         })
   }
+  function getThumb(path){
+    return `http://localhost:3000/static/images/${path}`
+  }
   //gets all page data asynchronously
-  
   useEffect(() => {
      console.log("getting page data")
      async function getPageData(){
         const topGames = await getQuery("static/top_games.json")
-        const thumb1 = await getQuery(`images/${topGames.id1}`);
-        const thumb2 = await getQuery(`images/${topGames.id2}`);
+
         const topArticles = await getQuery("static/top_articles.json");
-        const featuredGame1 = await getQuery(`games/${topGames.id1}`);
-        const featuredGame2 = await getQuery(`games/${topGames.id2}`);
+        const featuredGameCtnr1 = await getQuery(`games/${topGames.id1}`);
+        const featuredGame1 = featuredGameCtnr1.data;
+        const featuredGameCtnr2 = await getQuery(`games/${topGames.id2}`);
+        const featuredGame2 = featuredGameCtnr2.data;
         const featuredArticle1 = await getQuery(`articles/${topArticles.id1}`);
         const featuredArticle2 = await getQuery(`articles/${topArticles.id2}`);
         setFeaturedData([featuredGame1, featuredGame2, featuredArticle1.data, featuredArticle2.data])
-        console.log(thumb1);
-        console.log(topGames)
-        setGamesImages([thumb1, thumb2])
+        console.log(featuredGame1);
+        setGamesImages([getThumb(featuredGame1.thumb), getThumb(featuredGame2.thumb)])
     }
      getPageData()
   }, [])
@@ -62,7 +64,7 @@ const Home = (props) => {
             {/*header for first game-left justified*/}
             {/*first game*/}
             <div className="home-text-left">
-                <a href={`/game/${featuredData[0].id}`} className='home-header home-font-size-large'>
+                <a href={`/games/${featuredData[0].id}`} className='home-header home-font-size-large'>
                     {clip_title(featuredData[0].title)}
                 </a>
             </div>
@@ -70,19 +72,20 @@ const Home = (props) => {
             {/*body for first game-image on left*/}
             <p className="home-text-left">
                 {/*clickable image*/}
-                <Link to={`/game/${featuredData[0].id}`}>
-                    <img alt="welcome!" src={gamesImages[0].image_url} className='home-img-left'/>
+                <Link to={`/games/${featuredData[0].id}`}>
+                    <img alt="welcome!" src={gamesImages[0]} className='home-img-left'/>
                 </Link>
                 {/*main body*/ }
                 {clip_article(featuredData[0].description)}
                 {/*link to game*/}
-                <Link to={`/game/${featuredData[0].id}`}>{"<"}View Game{">"} </Link> 
+                {" "}
+                <Link to={`/games/${featuredData[0].id}`}>View Game{" "} </Link> 
             </p>
             <br/>
             
             {/*header for second game-right justified*/}
             <div className = 'home-text-right'>
-                <a href={`/game/${featuredData[1].id}`} className='home-header home-font-size-large'> 
+                <a href={`/games/${featuredData[1].id}`} className='home-header home-font-size-large'> 
                     {clip_title(featuredData[1].title)}
                 </a>
             </div>
@@ -90,13 +93,14 @@ const Home = (props) => {
             {/*body for second game-image on right*/}
             <p className="home-text-left">
                 {/*clickable image*/}
-                <Link to={`/game/${featuredData[1].id}`}>
-                    <img alt="welcome!" src={gamesImages[1].image_url} className='home-img-right'/>
+                <Link to={`/games/${featuredData[1].id}`}>
+                    <img alt="welcome!" src={gamesImages[1]} className='home-img-right'/>
                 </Link>
                 {/*main body*/ }
                 {clip_article(featuredData[1].description)}
                 {/*link to game*/}
-                <Link to={`/game/${featuredData[1].id}`}>{"<"}View Game{">"} </Link> 
+                {" "}
+                <Link to={`/games/${featuredData[1].id}`}>View Game{" "} </Link> 
             </p>
                 
                 

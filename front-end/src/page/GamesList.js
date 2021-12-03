@@ -28,32 +28,52 @@ const GamesList = (props) => {
     const [searchData, setSearchData] = useState([]);
     const [featureGame, setFeatureGame] = React.useState([]);
 
+    const [searchMessage, setSearchMessage] = useState("");
     function getQuery(args){
         return new Promise((resolve, reject) => {
-            axios.get(`http://localhost:3000/games/${args}`)
+            axios.get(`http://localhost:3000/${args}`)
             .then(res => (resolve(res.data)))
             .catch(err => console.log(err))
         })
     }
-
+    function sendSearchQuery(){
+        axios.post('http://localhost:3000/games_search', {
+            id: searchData
+        })
+        .then(res => {
+            setSearchMessage("Results:")
+            setFeatureGame([res.data.data])
+        }).catch(
+            err => {
+                if(err.response.status === 404){
+                    setSearchMessage("Game not found")
+                }else{
+                    setSearchMessage("Server error :(")
+                }
+            }
+        )
+    }
     
+
     
     useEffect(() => {
         console.log("Games page")
+        setFeatureGame([])
         async function getGameList() {
-            const gameTitle = await getQuery("1")
-            console.log(gameTitle.id)
-            const gameTitle2 = await getQuery("2")
-            const gameTitle3 = await getQuery("3")
-            const gameTitle4 = await getQuery("4")
-            const gameTitle5 = await getQuery("5")
-            setFeatureGame([gameTitle, gameTitle2, gameTitle3, gameTitle4, gameTitle5])
-        }
+            const topGames = await getQuery("static/featured_games.json")
+            //add each topGame to list
+            topGames.ids.forEach(id => {
+                getQuery(`games/${id}`).then(res => {
+                setFeatureGame(featureGame => [...featureGame, res.data])
+                })
+            })
+            console.log(featureGame[0])
+        }   
         getGameList()
     }, [])
     
     
-    if(featureGame.length < 5) {return <div>Loading...</div>}
+    /*if(featureGame.length < 5) {return <div>Loading...</div>}*/
     return (    
         <div className = "column">
             <div className = "text-box">
@@ -61,79 +81,43 @@ const GamesList = (props) => {
                     onChange = {(event) => { setSearchData(event.target.value); }}
                     id="outlined-multiline-static"
                     label="Search"
-                    Enter a
                     rows={4}
                     defaultValue=""
                 />
             </div>
             <div className = "search">
                 <SearchButton variant="contained" 
-                    onClick = {() => {console.log(searchData)}}
-                    /* onClick = {sendCommentData(...)} TODO5 */
+                    onClick = {() => { sendSearchQuery(); }}
                     startIcon={<SendIcon />} 
                     sx={{ backgroundColor:"darkred", maxWidth:96}}>
                     Search
                 </SearchButton>
                 {}
             </div>
+            {searchMessage}
             <div className = "game-header">
                 <h1>Games</h1>
                 <section className = "game-body"> 
-                    <article className="game-body">
-                        <div className="home-text-left">
-                            <a href={`/games/${featureGame[0].id}`} className='home-header home-font-size-large'>
-                                {clip_article(featureGame[0].title)}
-                            </a>
-                        </div>
-                        <p className="home-text-left">
-                            {/*main body*/ }
-                            {clip_article(featureGame[0].description)} 
-                        </p>
-                    </article>
-                    <article className="game-body">
-                        <div className="home-text-left">
-                            <a href={`/games/${featureGame[1].id}`} className='home-header home-font-size-large'>
-                                {clip_article(featureGame[1].title)}
-                            </a>
-                        </div>
-                        <p className="home-text-left">
-                            {/*main body*/ }
-                            {clip_article(featureGame[1].description)}
-                        </p>
-                    </article>
-                    <article className="game-body">
-                        <div className="home-text-left">
-                            <a href={`/games/${featureGame[2].id}`} className='home-header home-font-size-large'>
-                                {clip_article(featureGame[2].title)}
-                            </a>
-                        </div>
-                        <p className="home-text-left">
-                            {/*main body*/ }
-                            {clip_article(featureGame[2].description)}
-                        </p>
-                    </article>
-                    <article className="game-body">
-                        <div className="home-text-left">
-                            <a href={`/games/${featureGame[3].id}`} className='home-header home-font-size-large'>
-                                {clip_article(featureGame[3].title)}
-                            </a>
-                        </div>
-                        <p className="home-text-left">
-                            {/*main body*/ }
-                            {clip_article(featureGame[3].description)}
-                        </p>
-                    </article>
-                    <article className="game-body">
-                        <div className="home-text-left">
-                            <a href={`/games/${featureGame[4].id}`} className='home-header home-font-size-large'>
-                                {clip_article(featureGame[4].title)}
-                            </a>
-                        </div>
-                        <p className="home-text-left">
-                            {/*main body*/ }
-                            {clip_article(featureGame[4].description)}
-                        </p>
-                    </article>
+                    {featureGame.map((game, index) => {
+                        return (  
+                        <article className="game-body">
+                            <div className="home-text-left">
+                                <a href={`/games/${featureGame[index].id}`} className='home-header home-font-size-large'>
+                                    {clip_article(featureGame[index].title)}
+                                </a>
+                            </div>
+                            
+                            <img src={`http://localhost:3000/static/images/${featureGame[index].thumb}`} className="home-img-left" />
+                            
+                            
+                            <p className="home-text-left">
+                                {/*main body*/ }
+                                {clip_article(featureGame[index].description)} 
+                            </p>
+                        </article>
+                        )}
+                    )}
+                    
                 </section>
             </div>
         </div>
