@@ -60,6 +60,7 @@ const UserPage = (props) => {
         event.preventDefault();
         //send data to server
         const bodyFormData = new FormData();
+        bodyFormData.set('id', Math.random(100))
         bodyFormData.set('title', event.target.title.value);
         bodyFormData.set('description', event.target.description.value);
         bodyFormData.set('thumbnail', event.target.thumbnail.files[0]);
@@ -137,14 +138,14 @@ const UserPage = (props) => {
                                     <br/>
                                     <label>
                                         Select game files:
-                                        <input type="file" placeholder="File" name="game_files" webkitdirectory="true"/>
+                                        <input type="file" placeholder="File" name="game_files" webkitdirectory="true" required/>
                                     </label>
                                     <input type="text" placeholder="Description" name="description" required/>
                                     <br/>
                                     <br/>
                                     <label>
                                         Choose Thumbnail:
-                                        <input type="file" placehodler="Thumbnail" name="thumbnail" required/>
+                                        <input type="file" placeholder="Thumbnail" name="thumbnail" required/>
                                     </label>
                                     {/* unique ID */}
                                     <input type="submit" value="Upload" className="upload-button"/>
