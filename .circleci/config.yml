@@ -56,8 +56,8 @@ jobs:
            echo $DOCKERHUB_PASSWORD | docker login -u byteb22 --password-stdin
        - run: |
            cd back-end
-           docker build . -t << pipeline.id >>
-           docker push << pipeline.id >> 
+           docker build . -t byteb22/<< pipeline.id >>
+           docker push byteb22/<< pipeline.id >> 
        - run: 
            echo "beginning ssh"
        - run: 
