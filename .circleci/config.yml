@@ -42,6 +42,9 @@ jobs:
      machine: true 
      steps:
        - checkout
+       - add_ssh_keys:
+             fingerprints:
+                - "45:cc:dd:3f:ef:d3:08:fc:02:d3:72:09:f8:43:c0:b0"
        - run: 
            cd back-end
        - run: 
@@ -69,7 +72,7 @@ jobs:
        - run:
             chmod 400 temp
        - run: |
-           ssh -i temp circle@$SERVER_IP 
+           ssh circle3@$SERVER_IP 
            echo "good job"
        - run: 
            rm temp
