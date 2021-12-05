@@ -66,14 +66,12 @@ jobs:
            echo $ID_RSA > temp
        - run:
             chmod 400 temp
-       - run: 
-           ssh -i temp -o StrictHostKeyChecking=no docker@$SERVER_IP "echo $DOCKERHUB_PASSWORD | docker login -u byteb22 --password-stdin"
-       - run: 
-           ssh -i temp -o StrictHostKeyChecking=no docker@$SERVER_IP "docker pull byteb22/<< pipeline.id >>"
-       - run: 
-           ssh -i temp -o StrictHostKeyChecking=no docker@$SERVER_IP "docker container rm -f back-end || true"
-       - run: 
-           ssh -i temp -o StrictHostKeyChecking=no docker@$SERVER_IP "docker run -d -p 3000:3000 --name back-end  byteb22/<< pipeline.id >>"
+       - run: |
+           ssh -i temp circle@$SERVER_IP 
+           echo $DOCKERHUB_PASSWORD | docker login -u byteb22 --password-stdin
+           docker pull byteb22/<< pipeline.id >>
+           docker container rm -f back-end || true
+           docker run -d -p 3000:3000 --name back-end  byteb22/<< pipeline.id >>
        - run: 
            rm temp
        - run: 
