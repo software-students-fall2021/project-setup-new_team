@@ -8,8 +8,8 @@ jobs:
     docker:
       - image: cimg/node:16.13.0 # latest stable node at the time of writing
         # auth:
-        #   username: mydockerhub-user
-        #   password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+       	#username: byteb22
+        #password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
     steps:
       - checkout
       - run: echo "this is the build and test express.js job"
@@ -25,8 +25,8 @@ jobs:
     docker:
       - image: cimg/node:16.13.0 # latest stable node at the time of writing
         # auth:
-        #   username: mydockerhub-user
-        #   password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+        #username: byteb22
+      	#password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
     steps:
       - checkout
       - run: echo "this is the build react.js job"
@@ -38,7 +38,25 @@ jobs:
           cd front-end
           npm install # install all dependencies listed in package.json
           npm run build # have react build the stand-alone front-end code
-
+  deploy-back-end:
+     docker:
+       - image: cimg/node:16.13.0 
+     steps:
+       - checkout
+       - run: 
+           cd back-end
+           printf "$BACKEND_ENV" > .env
+           docker login -u byteb22 -p $DOCKERHUB_PASSWORD 
+           docker build . -t << pipeline.id >>
+           docker push << pipeline.id >> 
+           echo "$ID_RSA" > temp
+           apk update && apk add openssh-client
+           ssh -i temp -o StrictHostKeyChecking=no docker@$SERVER_IP "docker login -u byteb22 -p $DOCKERHUB_PASSWORD	"
+           ssh -i temp -o StrictHostKeyChecking=no docker@$SERVER_IP "docker pull << pipeline.id >>"
+           ssh -i temp -o StrictHostKeyChecking=no docker@$SERVER_IP "docker container rm -f back-end || true"
+           ssh -i temp -o StrictHostKeyChecking=no docker@$SERVER_IP "docker run -d -p 3000:3000 --name back-end  << pipeline.id >>"
+           rm temp
+      
 # Orchestrate our job run sequence
 workflows:
   build-and-test-back-end:
@@ -47,3 +65,10 @@ workflows:
   build-front-end:
     jobs:
       - build-react-js
+   # When this is working: add filters branchs only master
+  deploy: 
+     require:
+      build-and-test-back-end
+      build-front-end
+     jobs:
+       - deploy-back-end
