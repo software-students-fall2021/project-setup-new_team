@@ -52,7 +52,9 @@ jobs:
        - run: 
            echo "doing docker stuff"
        - run: 
-           docker login -u byteb22 -p '$DOCKERHUB_PASSWORD'
+           echo $DOCKERHUB_PASSWORD
+       - run: 
+           echo $DOCKERHUB_PASSWORD | docker login -u byteb22 --password-stdin
        - run: 
            docker build . -t << pipeline.id >>
        - run: 
@@ -87,5 +89,7 @@ workflows:
    # When this is working: add filters branchs only master
   deploy: 
      jobs:
-       - deploy-back-end
+       - deploy-back-end:
+           context:
+            - MyContext
 
