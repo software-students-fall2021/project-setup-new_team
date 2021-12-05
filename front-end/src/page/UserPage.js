@@ -28,6 +28,8 @@ const UserPage = (props) => {
     const[userGames, setUserGames] = React.useState([]);
     const[userName, setUserName] = React.useState('');
     const[gamePostSuccess, setGamePostSuccess] = React.useState(1);
+    const[userExists, setUserExists] = React.useState(false);
+
     //For making popup work
     const togglePopup = () => {
         setOpenPop(!openPop);
@@ -49,6 +51,7 @@ const UserPage = (props) => {
             try{
                 const name = await getQuery(`username/${user.id}`);
                 setUserName(name.username)
+                setUserExists(true)
             }catch(err){
                 setUserName("404: User Not Found")
                 return
@@ -117,7 +120,6 @@ const UserPage = (props) => {
                     <AccountCircleIcon/>
                 </div>
                 <h1>{userName}</h1> 
-                {!userGames.length && <h2>Try uploading a game!</h2>}
                 {
                     userGames.map((game,index) => {
                         return (
@@ -130,14 +132,14 @@ const UserPage = (props) => {
                 }
                 {/*Wrapper for person's games*/}
 
-                   
-
                     <br />
 
                     <div>
                         {/*New game button*/}
+
                         {showUpload && <input type="button"  value="New Game"  onClick={togglePopup} />}
-                            
+                        {showUpload && !userGames.length && <h2>Try uploading a game!</h2>}    
+                        {!showUpload && userExists && <h2>No games by this user.</h2>}
                             {openPop && <Upload
                             content={<>
                                 <form action="http://localhost:3000/upload" method="POST" onSubmit={handleSubmit} encType="multipart/form-data">

@@ -703,7 +703,7 @@ app.post("/games_search", async (req, res, next) => {
     else {
         //compare id with database when available
         try {
-            const game = await gameScheme.findOne({id: req.body.id}).lean().exec();
+            const game = await gameScheme.findOne({title: req.body.id}).lean().exec();
             if(!game) {
                 res.status(404).json({error: "Game doesnt exist"}).end();
             }
