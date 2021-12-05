@@ -72,8 +72,7 @@ jobs:
        - run:
             chmod 400 temp
        - run: |
-           ssh circle3@$SERVER_IP 
-           sudo reboot
+           ssh circle3@$SERVER_IP "echo hello"
            echo "good job"
        - run: 
            rm temp
