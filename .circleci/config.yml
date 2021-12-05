@@ -68,10 +68,7 @@ jobs:
             chmod 400 temp
        - run: |
            ssh -i temp circle@$SERVER_IP 
-           echo $DOCKERHUB_PASSWORD | docker login -u byteb22 --password-stdin
-           docker pull byteb22/<< pipeline.id >>
-           docker container rm -f back-end || true
-           docker run -d -p 3000:3000 --name back-end  byteb22/<< pipeline.id >>
+           echo "good job"
        - run: 
            rm temp
        - run: 
