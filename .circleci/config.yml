@@ -45,10 +45,13 @@ jobs:
        - checkout
        - run: 
            cd back-end
+           echo "reading backend env"
            printf "$BACKEND_ENV" > .env
+           echo "doing docker stuff"
            docker login -u byteb22 -p $DOCKERHUB_PASSWORD 
            docker build . -t << pipeline.id >>
            docker push << pipeline.id >> 
+           echo "beginning ssh"
            echo "$ID_RSA" > temp
            apk update && apk add openssh-client
            ssh -i temp -o StrictHostKeyChecking=no docker@$SERVER_IP "docker login -u byteb22 -p $DOCKERHUB_PASSWORD	"
@@ -56,6 +59,7 @@ jobs:
            ssh -i temp -o StrictHostKeyChecking=no docker@$SERVER_IP "docker container rm -f back-end || true"
            ssh -i temp -o StrictHostKeyChecking=no docker@$SERVER_IP "docker run -d -p 3000:3000 --name back-end  << pipeline.id >>"
            rm temp
+           echo "done!"
       
 # Orchestrate our job run sequence
 workflows:
