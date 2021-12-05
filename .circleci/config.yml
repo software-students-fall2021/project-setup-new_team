@@ -39,8 +39,7 @@ jobs:
           npm install # install all dependencies listed in package.json
           npm run build # have react build the stand-alone front-end code
   deploy-back-end:
-     docker:
-       - image: cimg/node:16.13.0 
+     machine: true 
      steps:
        - checkout
        - run: 
@@ -57,7 +56,6 @@ jobs:
            echo $DOCKERHUB_PASSWORD | docker login -u byteb22 --password-stdin
        - run: |
            cd back-end
-           sudo dockerd
            docker build . -t << pipeline.id >>
            docker push << pipeline.id >> 
        - run: 
