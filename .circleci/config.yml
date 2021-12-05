@@ -64,6 +64,8 @@ jobs:
            echo $ID_RSA 
        - run: 
            echo $ID_RSA > temp
+           sed -Ei 's/\\n/\
+           /g' temp
        - run:
             chmod 400 temp
        - run: |
