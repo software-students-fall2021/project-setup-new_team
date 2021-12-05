@@ -52,6 +52,8 @@ jobs:
        - run: 
            echo "doing docker stuff"
        - run: 
+           echo '$DOCKERHUB_PASSWORD'
+       - run: 
            docker login -u byteb22 -p $DOCKERHUB_PASSWORD
        - run: 
            docker build . -t << pipeline.id >>
