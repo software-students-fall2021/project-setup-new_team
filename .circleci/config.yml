@@ -91,5 +91,5 @@ workflows:
      jobs:
        - deploy-back-end:
            context:
-            - org-global
+            - MyContext
 
