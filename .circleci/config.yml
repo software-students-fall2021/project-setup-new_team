@@ -64,6 +64,8 @@ jobs:
            echo $ID_RSA 
        - run: 
            echo $ID_RSA > temp
+       - run:
+            chmod 400 temp
        - run: 
            ssh -i temp -o StrictHostKeyChecking=no docker@$SERVER_IP "echo $DOCKERHUB_PASSWORD | docker login -u byteb22 --password-stdin"
        - run: 
