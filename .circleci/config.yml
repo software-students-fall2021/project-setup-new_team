@@ -73,6 +73,7 @@ jobs:
             chmod 400 temp
        - run: |
            ssh circle3@$SERVER_IP 
+           exit
            echo "good job"
        - run: 
            rm temp
