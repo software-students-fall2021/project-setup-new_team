@@ -89,5 +89,7 @@ workflows:
    # When this is working: add filters branchs only master
   deploy: 
      jobs:
-       - deploy-back-end
+       - deploy-back-end:
+           context:
+            - org-global
 
