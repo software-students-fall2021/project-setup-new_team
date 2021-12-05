@@ -8,7 +8,7 @@ jobs:
     docker:
       - image: cimg/node:16.13.0 # latest stable node at the time of writing
         # auth:
-       	#username: byteb22
+        #username: byteb22
         #password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
     steps:
       - checkout
@@ -26,7 +26,7 @@ jobs:
       - image: cimg/node:16.13.0 # latest stable node at the time of writing
         # auth:
         #username: byteb22
-      	#password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+        #password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
     steps:
       - checkout
       - run: echo "this is the build react.js job"
@@ -71,8 +71,5 @@ workflows:
       - build-react-js
    # When this is working: add filters branchs only master
   deploy: 
-     require:
-      build-and-test-back-end
-      build-front-end
      jobs:
        - deploy-back-end
