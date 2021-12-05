@@ -48,7 +48,7 @@ jobs:
        - run: 
            echo "reading backend env"
        - run: 
-           printf "$BACKEND_ENV" > .env
+           printf $BACKEND_ENV > .env
        - run: 
            echo "doing docker stuff"
        - run: 
