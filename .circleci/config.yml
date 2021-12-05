@@ -59,23 +59,18 @@ jobs:
            echo $DOCKERHUB_PASSWORD | docker login -u byteb22 --password-stdin
        - run: |
            cd back-end
-           true || docker build . -t byteb22/<< pipeline.id >>
-           true || docker push byteb22/<< pipeline.id >> 
+           docker build . -t byteb22/<< pipeline.id >>
+           docker push byteb22/<< pipeline.id >> 
        - run: 
            echo "beginning ssh"
-       - run:
-           echo $ID_RSA 
        - run: 
-           echo $ID_RSA > temp
-           sed -Ei 's/\\n/\
-           /g' temp
-       - run:
-            chmod 400 temp
-       - run: |
-           ssh circle3@$SERVER_IP "echo hello"
-           echo "good job"
+           ssh circle3@$SERVER_IP "docker login -u byteb22 -p '$DOCKERHUB_PASSWORD'	"
        - run: 
-           rm temp
+           ssh circle3@$SERVER_IP "docker pull byteb22/<< pipeline.id >>"
+       - run: 
+           ssh circle3@$SERVER_IP "docker container rm -f back-end || true"
+       - run: 
+           ssh circle3@$SERVER_IP "docker run -d -p 3000:3000 --name back-end  byteb22/<< pipeline.id >>"
        - run: 
            echo "done!"
       
