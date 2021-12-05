@@ -31,13 +31,13 @@ const GamesList = (props) => {
     const [searchMessage, setSearchMessage] = useState("");
     function getQuery(args){
         return new Promise((resolve, reject) => {
-            axios.get(`http://localhost:3000/${args}`)
+            axios.get(`${process.env.REACT_APP_BACKEND_URL}/${args}`)
             .then(res => (resolve(res.data)))
             .catch(err => console.log(err))
         })
     }
     function sendSearchQuery(){
-        axios.post('http://localhost:3000/games_search', {
+        axios.post(`${process.env.REACT_APP_BACKEND_URL}/games_search`, {
             id: searchData
         })
         .then(res => {
@@ -106,7 +106,7 @@ const GamesList = (props) => {
                                 </a>
                             </div>
                             
-                            <img alt="alt text" src={`http://localhost:3000/static/images/${featureGame[index].thumb}`} className="home-img-left" />
+                            <img alt="alt text" src={`${process.env.REACT_APP_BACKEND_URL}/static/images/${featureGame[index].thumb}`} className="home-img-left" />
                             
                             
                             <p className="home-text-left">

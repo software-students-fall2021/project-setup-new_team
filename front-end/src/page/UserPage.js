@@ -37,7 +37,7 @@ const UserPage = (props) => {
 
     function getQuery(args){
         return new Promise((resolve, reject) => {
-              axios.get(`http://localhost:3000/${args}`)
+              axios.get(`${process.env.REACT_APP_BACKEND_URL}/${args}`)
               .then(res => {resolve(res.data)})
               .catch(err => {console.log(err); reject(err)})
           })
@@ -96,7 +96,7 @@ const UserPage = (props) => {
         for(let i = 0; i < event.target.game_files.files.length; i++){
             bodyFormData.append('game_files', event.target.game_files.files[i]);
         }
-        axios.post(`http://localhost:3000/upload/${user.id}`, bodyFormData, {
+        axios.post(`${process.env.REACT_APP_BACKEND_URL}/upload/${user.id}`, bodyFormData, {
             headers: { Authorization: `JWT ${jwtToken}`,
                         'Content-Type': 'multipart/form-data'}, //need to change the request args
         })
@@ -125,7 +125,7 @@ const UserPage = (props) => {
                         return (
                             <Link to={`/games/${game.id}`}>
                                 <h2>{clip_title(game.title)}</h2>
-                                {<img src={`http://localhost:3000/static/images/${game.thumb}`} alt={game.title} className="userImageCenter"/>}
+                                {<img src={`${process.env.REACT_APP_BACKEND_URL}/static/images/${game.thumb}`} alt={game.title} className="userImageCenter"/>}
                             </Link>
                         )
                     })
@@ -142,7 +142,7 @@ const UserPage = (props) => {
                         {!showUpload && userExists && <h2>No games by this user.</h2>}
                             {openPop && <Upload
                             content={<>
-                                <form action="http://localhost:3000/upload" method="POST" onSubmit={handleSubmit} encType="multipart/form-data">
+                                <form action={`${process.env.REACT_APP_BACKEND_URL}/upload`} method="POST" onSubmit={handleSubmit} encType="multipart/form-data">
                                     <input type="text" placeholder="Title" name="title" required/>
                                     <br/>
                                     <br/>
@@ -187,7 +187,7 @@ const Home = (props) => {
   const [featuredData, setFeaturedData] = React.useState([]); //actual data for page
   function getQuery(args){
       return new Promise((resolve, reject) => {
-            axios.get(`http://localhost:3000/${args}`)
+            axios.get(`${process.env.REACT_APP_BACKEND_URL}/${args}`)
             .then(res => {resolve(res.data)})
             .catch(err => {console.log(err)})
         })
@@ -253,7 +253,7 @@ const Home = (props) => {
                             
                             {openPop && <Upload
                             content={<>
-                                <form action="http://localhost:3000/upload" method="POST" onSubmit={handleSubmit}>
+                                <form action="${process.env.REACT_APP_BACKEND_URL}/upload" method="POST" onSubmit={handleSubmit}>
                                     <input type="title" placeholder="Title" name="title" required/>
                                     <input type="file" placeholder="File" name="file" required/>
                                     <input type="description" placeholder="Description" name="description" required/>

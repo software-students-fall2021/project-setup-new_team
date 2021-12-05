@@ -12,7 +12,7 @@ const GamesPage = (props) =>
 	const [username, setUsername] = useState('')
 	const id = useParams().id;
   	useEffect(() => {
-		axios.get(`http://localhost:3000/games/${id}`)
+		axios.get(`${process.env.REACT_APP_BACKEND_URL}/games/${id}`)
 		.then((response) => {
 			setData(response.data.data)
 		})
@@ -24,7 +24,7 @@ const GamesPage = (props) =>
 		if(data.length === 0){
 			return;
 		}
-		axios.get(`http://localhost:3000/username/${data.userid}`)
+		axios.get(`${process.env.REACT_APP_BACKEND_URL}/username/${data.userid}`)
 		.then((response) => {
 			setUsername(response.data.username)
 			console.log(response.data.username)
@@ -42,7 +42,7 @@ const GamesPage = (props) =>
 			<h1>{data.title}</h1>
 			<section className="game-header">
 				<article key={data.id}>
-				<img src={`http://localhost:3000/static/images/${data.thumb}`} alt="alt text" className="game-img-center"/>
+				<img src={`${process.env.REACT_APP_BACKEND_URL}/static/images/${data.thumb}`} alt="alt text" className="game-img-center"/>
 				<div className= "game-description">
 					<p>{data.description}</p>
 					<button className = "button-search">Play</button>

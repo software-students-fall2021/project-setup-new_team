@@ -566,7 +566,7 @@ app.get('/username/:id', async (req,res,next) => {
     try{
         const user = await User.findOne({id: req.params.id}).lean().exec();
         if(!user){
-            res.status(401).json({error: 'User not found'}).end();
+            res.status(404).json({error: 'User not found'}).end();
             return;
         }else {
             res.json({

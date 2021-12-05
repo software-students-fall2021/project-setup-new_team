@@ -24,14 +24,15 @@ const Home = (props) => {
   //generic query for data from server
   function getQuery(args){
       return new Promise((resolve, reject) => {
-            axios.get(`http://localhost:3000/${args}`)
+            axios.get(`${process.env.REACT_APP_BACKEND_URL}/${args}`)
             .then(res => {resolve(res.data)})
             .catch(err => {console.log(err)})
         })
   }
   function getThumb(path){
-    return `http://localhost:3000/static/images/${path}`
+    return `${process.env.REACT_APP_BACKEND_URL}/static/images/${path}`
   }
+  console.log(process.env.REACT_APP_BACKEND_URL)
   //gets all page data asynchronously
   useEffect(() => {
      console.log("getting page data")

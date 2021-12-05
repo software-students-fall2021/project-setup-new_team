@@ -12,7 +12,7 @@ const Login = (props) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     //send data to server
-    axios.post('http://localhost:3000/login', {
+    axios.post(`${process.env.REACT_APP_BACKEND_URL}/login`, {
       username: event.target.username.value,
       password: event.target.password.value
     })
@@ -45,7 +45,7 @@ const Login = (props) => {
                         Login
                     </div>
                     {/* form to post data to back-end when submitted */}
-                    <form action="http://localhost:3000/login" method="POST" onSubmit={handleSubmit}>
+                    <form action={`${process.env.REACT_APP_BACKEND_URL}/login`} method="POST" onSubmit={handleSubmit}>
                             <input type="text" placeholder="Username" name="username" required/>
                             <br/>
                             <input type="password" placeholder="Password" name="password" required/>

@@ -43,7 +43,7 @@ const ArticleP = (props) => {
     useEffect(() => {
 
         // "fetch" from mockaroo
-        axios(`http://localhost:3000/articles/${name}`)
+        axios(`${process.env.BACKEND_URL}/${name}`)
             .then((response) =>
                 setArticleData(response.data.data))
         .catch((err) => 
@@ -90,7 +90,7 @@ const ArticleP = (props) => {
                 <div className = "row">
                 <Rating sx ={{ paddingBottom: .5}} onChange = {(event) => { setRatingData(event.target.value); }} />
                     <SendButton variant="contained" 
-                        onClick = {(event) => { axios.post(`http://localhost:3000/articles/${article.article_name}/comment`, ({
+                        onClick = {(event) => { axios.post(`${process.env.REACT_APP_BACKEND_URL}/articles/${article.article_name}/comment`, ({
                                 user: userData,
                                 comment: commentData,
                                 rating: ratingData,

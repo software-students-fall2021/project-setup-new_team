@@ -11,7 +11,7 @@ const Registration = (props) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     //send data to server
-    axios.post('http://localhost:3000/register', {
+    axios.post(`${process.env.REACT_APP_BACKEND_URL}/register`, {
       username: event.target.username.value,
       email: event.target.email.value,
       password: event.target.password.value,
@@ -42,7 +42,7 @@ const Registration = (props) => {
                     Register
                 </div>
                 {/* form to post data to back-end when submitted */}
-                <form action="http://localhost:3000/register" method="POST" onSubmit={handleSubmit}>
+                <form action={`${process.env.REACT_APP_BACKEND_URL}/register`} method="POST" onSubmit={handleSubmit}>
                     <input type="text" placeholder="Username" name="username" required/>
                     <input type="email" placeholder="Email" name="email" required/>
                     <input type="password" placeholder="Password" name="password" required/>

@@ -14,7 +14,7 @@ const DebugLogin = (props) => {
             setStatus("there's no token");
             return;
         }
-        axios.get('http://localhost:3000/logintest',{
+        axios.get(`${process.env.REACT_APP_BACKEND_URL}/logintest`,{
             headers: { Authorization: `JWT ${jwtToken}` },
           })
             .then(res => {
@@ -28,7 +28,7 @@ const DebugLogin = (props) => {
     const handleSubmit = (event) => {
         event.preventDefault();
         //send data to server
-        axios.post('http://localhost:3000/logintest', {
+        axios.post(`${process.env.REACT_APP_BACKEND_URL}/logintest`, {
             message: event.target.message.value
         }, {
             headers: { Authorization: `JWT ${jwtToken}` },
