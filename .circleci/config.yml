@@ -64,7 +64,7 @@ jobs:
        - run: 
            echo "beginning ssh"
        - run: 
-           ssh circle3@$SERVER_IP "echo $DOCKERHUB_PASSWORD docker login -u byteb22  --password-stdin"
+           ssh circle3@$SERVER_IP "echo $DOCKERHUB_PASSWORD | docker login -u byteb22  --password-stdin"
        - run: 
            ssh circle3@$SERVER_IP "docker pull byteb22/<< pipeline.id >>"
        - run: 
