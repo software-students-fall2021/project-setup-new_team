@@ -50,8 +50,6 @@ jobs:
        - run: |
            cd back-end
            printf $BACKEND_ENV > .env
-           sed -Ei 's/\\n\
-           /g' .env
        - run: 
            echo "doing docker stuff"
        - run: 
