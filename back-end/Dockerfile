@@ -12,7 +12,7 @@ COPY . .
 #check this please
 EXPOSE 3000
 
-CMD ["pm2", "start", "app.js"]
+CMD ["pm2-runtime", "server.js"]
 
 
 
