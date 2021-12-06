@@ -139,7 +139,7 @@ const UserPage = (props) => {
 
                         {showUpload && <input type="button"  value="New Game"  onClick={togglePopup} />}
                         {showUpload && !userGames.length && <h2>Try uploading a game!</h2>}    
-                        {!showUpload && userExists && <h2>No games by this user.</h2>}
+                        {!showUpload && userExists && !userGames.length && <h2>No games by this user.</h2>}
                             {openPop && <Upload
                             content={<>
                                 <form action={`${process.env.REACT_APP_BACKEND_URL}/upload`} method="POST" onSubmit={handleSubmit} encType="multipart/form-data">
