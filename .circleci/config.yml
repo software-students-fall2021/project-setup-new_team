@@ -94,9 +94,13 @@ workflows:
     jobs:
       - build-react-js
    # When this is working: add filters branchs only master
-  deploy: 
+  deploy:  
      jobs:
        - deploy-to-droplet:
            context:
             - MyContext
+           filters:
+               branches:
+                   only:
+                     - master
 
