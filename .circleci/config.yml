@@ -73,11 +73,15 @@ jobs:
        - run: 
            ssh circle3@$SERVER_IP "docker pull byteb22/backend<< pipeline.id >>"
        - run: 
+           ssh circle3@$SERVER_IP "docker kill back-end || true"
+       - run: 
            ssh circle3@$SERVER_IP "docker container rm -f back-end || true"
        - run: 
            ssh circle3@$SERVER_IP "docker run -d -p 3000:3000 --name back-end  byteb22/backend<< pipeline.id >>"
        - run: 
            ssh circle3@$SERVER_IP "docker pull byteb22/frontend<< pipeline.id >>"
+       - run: 
+           ssh circle3@$SERVER_IP "docker kill front-end || true"
        - run: 
            ssh circle3@$SERVER_IP "docker container rm -f front-end || true"
        - run: 
