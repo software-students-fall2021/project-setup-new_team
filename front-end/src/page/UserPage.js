@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 
 //import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Link	from '@mui/material/Link';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 import './UserPage.css'
@@ -16,7 +15,9 @@ const clip_title = (data) => {
     }
     return data
 }
-
+const randInt = () =>{
+    return Math.floor(Math.random() * 1e12)
+}
 const UserPage = (props) => {
     const jwtToken = localStorage.getItem("loginToken")
 
@@ -25,6 +26,9 @@ const UserPage = (props) => {
     const [showUpload, setShowUpload] = useState(false);
     const [uploadMessage, setUploadMessage] = React.useState('');
     const[userGames, setUserGames] = React.useState([]);
+    const[userName, setUserName] = React.useState('');
+    const[gamePostSuccess, setGamePostSuccess] = React.useState(1);
+    const[userExists, setUserExists] = React.useState(false);
 
     //For making popup work
     const togglePopup = () => {
@@ -33,20 +37,44 @@ const UserPage = (props) => {
 
     function getQuery(args){
         return new Promise((resolve, reject) => {
-              axios.get(`http://localhost:3000/${args}`)
+              axios.get(`${process.env.REACT_APP_BACKEND_URL}/${args}`)
               .then(res => {resolve(res.data)})
-              .catch(err => {console.log(err)})
+              .catch(err => {console.log(err); reject(err)})
           })
     }
-
+    
    
     useEffect(() => {
         const decodedToken = jwt.decode(jwtToken)
         async function getPageData(){
+            setUserGames([]);
+            try{
+                const name = await getQuery(`username/${user.id}`);
+                setUserName(name.username)
+                setUserExists(true)
+            }catch(err){
+                setUserName("404: User Not Found")
+                return
+            }
             const gamelist = await getQuery(`user_games/${user.id}`);
-            const game1 = await getQuery(`games_data/${gamelist.id1}`);
-            const game2 = await getQuery(`games_data/${gamelist.id2}`);
-            setUserGames([game1, game2])
+            console.log(gamelist)
+            if(!gamelist){
+                return;
+            }
+            //add each game in gameslist to userGames
+            gamelist.map(game => {
+                return {
+                    id: game.id,
+                    title: game.title,
+                    description: game.description,
+                    thumb: game.thumb,
+                    userid: game.userid,
+                    path: game.path
+                }
+            }).forEach(game => {
+                setUserGames(userGames => [...userGames, game])
+            })
+
         }
         console.log("getting page data")
         getPageData()
@@ -54,13 +82,13 @@ const UserPage = (props) => {
         if(decodedToken && user.id == decodedToken.id){//yes it's supposed to be comparing equality WITH casting
             setShowUpload(true)
         }
-    }, [jwtToken, user.id])
+    }, [jwtToken, user.id, gamePostSuccess])
 
     const handleSubmit = (event) => {
         event.preventDefault();
         //send data to server
         const bodyFormData = new FormData();
-        bodyFormData.set('id', Math.random(100))
+        bodyFormData.set('id',randInt())
         bodyFormData.set('title', event.target.title.value);
         bodyFormData.set('description', event.target.description.value);
         bodyFormData.set('thumbnail', event.target.thumbnail.files[0]);
@@ -68,7 +96,7 @@ const UserPage = (props) => {
         for(let i = 0; i < event.target.game_files.files.length; i++){
             bodyFormData.append('game_files', event.target.game_files.files[i]);
         }
-        axios.post(`http://localhost:3000/upload/${user.id}`, bodyFormData, {
+        axios.post(`${process.env.REACT_APP_BACKEND_URL}/upload/${user.id}`, bodyFormData, {
             headers: { Authorization: `JWT ${jwtToken}`,
                         'Content-Type': 'multipart/form-data'}, //need to change the request args
         })
@@ -76,6 +104,8 @@ const UserPage = (props) => {
           //give success message
           console.log(response);
           setUploadMessage(response.data.status);
+          setOpenPop(false)
+          setGamePostSuccess(gamePostSuccess + 1)
         })
         .catch(function (error) {
           //give error message
@@ -83,56 +113,36 @@ const UserPage = (props) => {
           setUploadMessage(error.response.data.status);
         });
     }
-    if(userGames.length < 2){return <div>Loading...</div>}
     return (
         <div className="container">
             <div className="UserPage">
                 <div className="profilePic">
                     <AccountCircleIcon/>
                 </div>
-                <h1>Username</h1> {/* TODO: get username from server -A*/}
-
+                <h1>{userName}</h1> 
+                {
+                    userGames.map((game,index) => {
+                        return (
+                            <Link to={`/games/${game.id}`}>
+                                <h2>{clip_title(game.title)}</h2>
+                                {<img src={`${process.env.REACT_APP_BACKEND_URL}/static/images/${game.thumb}`} alt={game.title} className="userImageCenter"/>}
+                            </Link>
+                        )
+                    })
+                }
                 {/*Wrapper for person's games*/}
-                <section className="yourGames">
-                    <div className="textCenter">
-                        <a href='/game'>
-                        {clip_title(userGames[0].title)}
-                        </a>
-                    </div>
-
-                    {/*body for first game-image*/}
-                    <p>
-                        {/*clickable image*/}
-                        <Link to="/games">
-                            <img alt="uh" src="https://picsum.photos/300" />
-                        </Link>
-                    </p>
-                    <br />
-                    {/*header for second game-right*/}
-                    <div className='textCenter'>
-                        <a href='/games' className='bannerClass fontSizeLarge'>
-                             {clip_title(userGames[1].title)}
-                        </a>
-                    </div>
-
-                    {/*body for second game-image*/}
-                    <p className="textCenter">
-                        {/*clickable image*/}
-                        <Link to="/games">
-                            <img alt="uh" src="https://picsum.photos/300" />
-                        </Link>
-                    </p>
-
 
                     <br />
 
                     <div>
                         {/*New game button*/}
+
                         {showUpload && <input type="button"  value="New Game"  onClick={togglePopup} />}
-                            
+                        {showUpload && !userGames.length && <h2>Try uploading a game!</h2>}    
+                        {!showUpload && userExists && !userGames.length && <h2>No games by this user.</h2>}
                             {openPop && <Upload
                             content={<>
-                                <form action="http://localhost:3000/upload" method="POST" onSubmit={handleSubmit} encType="multipart/form-data">
+                                <form action={`${process.env.REACT_APP_BACKEND_URL}/upload`} method="POST" onSubmit={handleSubmit} encType="multipart/form-data">
                                     <input type="text" placeholder="Title" name="title" required/>
                                     <br/>
                                     <br/>
@@ -157,7 +167,6 @@ const UserPage = (props) => {
                             handleClose={togglePopup}
                             />}
                     </div>
-                </section>
             </div>
         </div>
     )
@@ -178,7 +187,7 @@ const Home = (props) => {
   const [featuredData, setFeaturedData] = React.useState([]); //actual data for page
   function getQuery(args){
       return new Promise((resolve, reject) => {
-            axios.get(`http://localhost:3000/${args}`)
+            axios.get(`${process.env.REACT_APP_BACKEND_URL}/${args}`)
             .then(res => {resolve(res.data)})
             .catch(err => {console.log(err)})
         })
@@ -244,7 +253,7 @@ const Home = (props) => {
                             
                             {openPop && <Upload
                             content={<>
-                                <form action="http://localhost:3000/upload" method="POST" onSubmit={handleSubmit}>
+                                <form action="${process.env.REACT_APP_BACKEND_URL}/upload" method="POST" onSubmit={handleSubmit}>
                                     <input type="title" placeholder="Title" name="title" required/>
                                     <input type="file" placeholder="File" name="file" required/>
                                     <input type="description" placeholder="Description" name="description" required/>

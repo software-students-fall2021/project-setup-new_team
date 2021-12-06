@@ -31,7 +31,7 @@ const ArticlesP = (props) =>
 	const [articleData, setArticleData] = useState(null);
 	useEffect(() => {
 		// "fetch" from mockaroo
-		axios('http://localhost:3000/articles') // server is on port 3000, we are on port 3001. cant use .
+		axios(`${process.env.REACT_APP_BACKEND_URL}/articles`) // server is on port 3000, we are on port 3001. cant use .
 			.then((response) => {
 				setArticleData(response.data)
 		})
@@ -71,7 +71,7 @@ const ArticlesP = (props) =>
 
 
 
-	                		axios.post(`http://localhost:3000/articles/upload`, result, {
+	                		axios.post(`${process.env.REACT_APP_BACKEND_URL}/articles/upload`, result, {
 								headers: { Authorization: `JWT ${jwtToken}` }
 							}).then(response => {
 

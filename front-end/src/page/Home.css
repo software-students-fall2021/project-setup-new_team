@@ -1,7 +1,3 @@
-.Home {
-}
-.featuredGames{
-}
 
 .container { 
     border: 1px solid black;
@@ -44,8 +40,12 @@ p {
 .home-img-left{
     clear: left; 
     float: left;
+    width: 100px;
+    height: 100px;
 }
 .home-img-right{
     clear: right;
     float: right;
+    width: 100px;
+    height: 100px;
 }
