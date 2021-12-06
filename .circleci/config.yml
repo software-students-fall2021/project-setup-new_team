@@ -62,7 +62,7 @@ jobs:
            echo "doing front-end"
        - run: | #env has no secrets, just port and ip
            cd front-end
-           printf $FRONTEND_ENV > .env
+           printf "$FRONTEND_ENV" > .env
            cat .env
            docker build . -t byteb22/frontend<< pipeline.id >>
            docker push byteb22/frontend<< pipeline.id >> 
