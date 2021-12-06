@@ -60,9 +60,10 @@ jobs:
            docker push byteb22/backend<< pipeline.id >> 
        - run:
            echo "doing front-end"
-       - run: |
+       - run: | #env has no secrets, just port and ip
            cd front-end
            printf $FRONTEND_ENV > .env
+           cat .env
            docker build . -t byteb22/frontend<< pipeline.id >>
            docker push byteb22/frontend<< pipeline.id >> 
        - run: 
