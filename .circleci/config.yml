@@ -99,8 +99,8 @@ workflows:
        - deploy-to-droplet:
            context:
             - MyContext
-           #filters:
-               #branches:
-                   #only:
-                    # - master
+           filters:
+               branches:
+                   only:
+                     - master
 
