@@ -8,8 +8,8 @@ jobs:
     docker:
       - image: cimg/node:16.13.0 # latest stable node at the time of writing
         # auth:
-        #   username: mydockerhub-user
-        #   password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+        #username: byteb22
+        #password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
     steps:
       - checkout
       - run: echo "this is the build and test express.js job"
@@ -25,8 +25,8 @@ jobs:
     docker:
       - image: cimg/node:16.13.0 # latest stable node at the time of writing
         # auth:
-        #   username: mydockerhub-user
-        #   password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
+        #username: byteb22
+        #password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
     steps:
       - checkout
       - run: echo "this is the build react.js job"
@@ -38,7 +38,52 @@ jobs:
           cd front-end
           npm install # install all dependencies listed in package.json
           npm run build # have react build the stand-alone front-end code
-
+  deploy-to-droplet:
+     machine: true 
+     steps:
+       - checkout
+       - add_ssh_keys:
+             fingerprints:
+                - "45:cc:dd:3f:ef:d3:08:fc:02:d3:72:09:f8:43:c0:b0"
+       - run: 
+           echo "doing docker stuff"
+       - run: 
+           echo $DOCKERHUB_PASSWORD
+       - run: 
+           echo $DOCKERHUB_PASSWORD | docker login -u byteb22 --password-stdin
+       - run:
+           echo "doing back-end"
+       - run: |
+           cd back-end
+           printf $BACKEND_ENV > .env
+           docker build . -t byteb22/backend<< pipeline.id >>
+           docker push byteb22/backend<< pipeline.id >> 
+       - run:
+           echo "doing front-end"
+       - run: |
+           cd front-end
+           printf $FRONTEND_ENV > .env
+           docker build . -t byteb22/frontend<< pipeline.id >>
+           docker push byteb22/frontend<< pipeline.id >> 
+       - run: 
+           echo "beginning ssh"
+       - run: 
+           ssh circle3@$SERVER_IP "echo $DOCKERHUB_PASSWORD | docker login -u byteb22  --password-stdin"
+       - run: 
+           ssh circle3@$SERVER_IP "docker pull byteb22/backend<< pipeline.id >>"
+       - run: 
+           ssh circle3@$SERVER_IP "docker container rm -f back-end || true"
+       - run: 
+           ssh circle3@$SERVER_IP "docker run -d -p 3000:3000 --name back-end  byteb22/backend<< pipeline.id >>"
+       - run: 
+           ssh circle3@$SERVER_IP "docker pull byteb22/frontend<< pipeline.id >>"
+       - run: 
+           ssh circle3@$SERVER_IP "docker container rm -f front-end || true"
+       - run: 
+           ssh circle3@$SERVER_IP "docker run -d -p 4000:4000 --name back-end  byteb22/frontend<< pipeline.id >>"
+       - run: 
+           echo "done!"
+      
 # Orchestrate our job run sequence
 workflows:
   build-and-test-back-end:
@@ -47,3 +92,10 @@ workflows:
   build-front-end:
     jobs:
       - build-react-js
+   # When this is working: add filters branchs only master
+  deploy: 
+     jobs:
+       - deploy-to-droplet:
+           context:
+            - MyContext
+
