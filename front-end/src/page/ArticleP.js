@@ -43,7 +43,7 @@ const ArticleP = (props) => {
     useEffect(() => {
 
         // "fetch" from mockaroo
-        axios(`${process.env.REACT_APP_BACKEND_URL}/${name}`)
+        axios(`${process.env.REACT_APP_BACKEND_URL}/articles/${name}`)
             .then((response) =>
                 setArticleData(response.data.data))
         .catch((err) => 
