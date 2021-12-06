@@ -46,11 +46,12 @@ jobs:
              fingerprints:
                 - "45:cc:dd:3f:ef:d3:08:fc:02:d3:72:09:f8:43:c0:b0"
        - run: 
-           cd back-end
-       - run: 
            echo "reading backend env"
-       - run: 
+       - run: |
+           cd back-end
            printf $BACKEND_ENV > .env
+           sed -Ei 's/\\n\
+           /g' .env
        - run: 
            echo "doing docker stuff"
        - run: 
