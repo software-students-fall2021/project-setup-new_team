@@ -80,7 +80,7 @@ jobs:
        - run: 
            ssh circle3@$SERVER_IP "docker container rm -f front-end || true"
        - run: 
-           ssh circle3@$SERVER_IP "docker run -d -p 4000:4000 --name back-end  byteb22/frontend<< pipeline.id >>"
+           ssh circle3@$SERVER_IP "docker run -d -p 4000:4000 --name front-end  byteb22/frontend<< pipeline.id >>"
        - run: 
            echo "done!"
       
