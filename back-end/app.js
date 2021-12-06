@@ -96,6 +96,11 @@ app.get('/articles_data/:id', (req,res,next) => {
     }
 })
 
+app.get('/debug_env/', (req,res,next) => {
+    res.json({
+        debug: process.env.DEBUG
+    })
+})
 // Article functionality goes here
 // let staticArticleData = {};
 
