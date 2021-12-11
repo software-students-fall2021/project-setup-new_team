@@ -25,3 +25,4 @@ This will be added as the project progresses.
 Our first build is availible of our website! 
 http://137.184.20.137:4000/
 
+We have implemented both continuous deployment in our [circle CI](https://github.com/software-students-fall2021/project-setup-new_team/blob/master/.circleci/config.yml) file and we have included a deployment to Docker in the circle CI configuration using our Dockerfiles ([front-end](https://github.com/software-students-fall2021/project-setup-new_team/blob/master/front-end/Dockerfile) and [back-end](https://github.com/software-students-fall2021/project-setup-new_team/blob/master/back-end/Dockerfile)).
